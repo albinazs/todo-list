@@ -1,9 +1,78 @@
-body {
-    color: red;
-}
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+  font-size: inherit;
+}
+
+li {
+  list-style-type: none;
+}
+
+body {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 5rem auto;
+}
+
+header {
+  background-color: #ff9000;
+  padding: 1rem;
+  grid-column: span 2;
+  display: flex;
+  align-items: center;
+  font-size: 2rem;
+  color: white;
+}
+
+aside {
+  background-color: #fafafa;
+  padding: 2rem;
+}
+
+aside li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+aside li span {
+  margin-right: 10px;
+}
+
+aside button {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+}
+
+.projects {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  margin-top: 30px;
+}
+
+.projects button {
+  font-size: 1.5rem;
+}
+
+aside p {
+  font-size: 1.3rem;
+  font-weight: 900;
+}
+
+.main {
+  background-color: #ffffff;
+  padding: 2rem;
 }

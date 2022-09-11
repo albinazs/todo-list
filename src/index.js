@@ -1,42 +1,6 @@
 import "./style.css";
 
-function HelloWorld({
-  greeting = "hello",
-  greeted = '"World"',
-  silent = false,
-  onMouseOver,
-}) {
-  if (!greeting) {
-    return null;
-  }
-
-  // TODO: Don't use random in render
-  let num = Math.floor(Math.random() * 1e7)
-    .toString()
-    .replace(/\.\d+/gi, "");
-
-  return (
-    <div
-      className="HelloWorld"
-      title={`You are visitor number ${num}`}
-      onMouseOver={onMouseOver}
-    >
-      <strong>
-        {greeting.slice(0, 1).toUpperCase() + greeting.slice(1).toLowerCase()}
-      </strong>
-      {greeting.endsWith(",") ? (
-        " "
-      ) : (
-        <span style={{ color: "grey" }}>", "</span>
-      )}
-      <em>{greeted}</em>
-      {silent ? "." : "!"}
-    </div>
-  );
-}
-
 /* 
-
 todo app
 
 dom
@@ -46,12 +10,18 @@ dom
 - completed
 - projects list
 
-[projects]
+{todo list}
+- [projects]
+- toAdd project
+- toRemove project
 
 {project}
 - title
 - data-key for dom remove/edit
 - [todo items]
+- toEdit project
+- toAdd todo
+- toRemove todo
 
 {todo item}:
 - title
@@ -59,6 +29,7 @@ dom
 - dueDate
 - isComplete
 - data-key for dom remove/edit
+- toEdit (incl isComplete)
 
 app logic object or module?
 - creates todos
