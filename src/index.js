@@ -1,5 +1,50 @@
 import "./style.css";
 
+let project = [];
+
+
+class TodoItem {
+  constructor(description, dueDate) {
+    this.description = description;
+    this.dueDate = dueDate;
+  }
+
+  editTodo(newDescription, newDueDate) {
+    this.description = newDescription;
+    this.dueDate = newDueDate;
+  }
+}
+
+const toClean = new TodoItem("to clean room", "2pm");
+console.log(toClean);
+
+toClean.editTodo("to mop", "4pm");
+console.log(toClean);
+
+class Project {
+  constructor(description) {
+    this.description = description;
+    this.todoList = [];
+  }
+
+  editProject(newDescription) {
+    this.description = newDescription;
+  }
+
+  addTodo(todoItem) {
+    this.todoList.push(todoItem);
+  }
+}
+
+const demoProject = new Project('demo');
+console.log(demoProject);
+
+demoProject.addTodo(toClean);
+console.log(demoProject);
+
+
+
+
 /* 
 todo app
 
@@ -24,7 +69,6 @@ dom
 - toRemove todo
 
 {todo item}:
-- title
 - desc
 - dueDate
 - isComplete

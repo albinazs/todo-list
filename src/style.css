@@ -16,8 +16,8 @@ li {
 body {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: 5rem auto;
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: 5rem 1fr;
 }
 
 header {
@@ -35,12 +35,6 @@ aside {
   padding: 2rem;
 }
 
-aside li {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
 aside li span {
   margin-right: 10px;
 }
@@ -49,28 +43,46 @@ aside button {
   background: none;
   color: inherit;
   border: none;
-  padding: 0;
+  padding: 10px;
   font: inherit;
   cursor: pointer;
   outline: inherit;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+aside button:hover {
+  background-color: #f0eded;
 }
 
 .projects {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 15px;
-  margin-top: 30px;
 }
 
 .projects button {
-  font-size: 1.5rem;
+  font-size: 2rem;
+  width: auto;
+}
+
+.projects button:hover {
+  color: #ff9000;
+  background-color: inherit;
 }
 
 aside p {
   font-size: 1.3rem;
   font-weight: 900;
 }
+
+/*
+to add padding to match aside start
+to fix bold font
+to fix width of the aside button
+to ADD transition!
+*/
 
 .main {
   background-color: #ffffff;
