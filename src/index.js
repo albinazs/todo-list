@@ -1,6 +1,10 @@
 import "./style.css";
-import { format } from 'date-fns';
-import {renderTodos} from './DOM.js';
+import { format } from "date-fns";
+import { renderTodos } from "./DOM.js";
+
+/* data structures 
+todoApp
+*/
 
 class TodoItem {
   constructor(description, dueDate) {
@@ -17,13 +21,7 @@ class TodoItem {
   completeTodo() {
     this.isComplete = true;
   }
-};
-
-const toClean = new TodoItem("to clean room", "2pm");
-console.log(toClean);
-
-toClean.editTodo("to mop", "4pm");
-console.log(toClean);
+}
 
 class Project {
   constructor(description) {
@@ -38,13 +36,7 @@ class Project {
   addTodo(todoItem) {
     this.todoList.push(todoItem);
   }
-};
-
-export const demoProject = new Project("demo");
-console.log(demoProject);
-
-demoProject.addTodo(toClean);
-console.log(demoProject);
+}
 
 const todoApp = {
   projects: [],
@@ -53,13 +45,20 @@ const todoApp = {
   },
 };
 
+// demo project and item in todoapp
+const toClean = new TodoItem("to clean room", "2pm");
+toClean.editTodo("to mop", "4pm");
+
+export const demoProject = new Project("demo");
+
+demoProject.addTodo(toClean);
 todoApp.addProject(demoProject);
+
 console.log(todoApp);
-
-
 renderTodos();
+
 /* 
-{todo list}
+{todoApp}
 - [projects]
 - toAdd project
 - toRemove project
@@ -68,7 +67,7 @@ loop through all projects todolists and list those with duedate =
 
 {project}
 - title
-- data-key for dom remove/edit
+- data-key === array index for dom remove/edit
 - [todo items]
 - toEdit project
 - toAdd todo
@@ -79,7 +78,7 @@ loop through all projects todolists and list those with duedate =
 - dueDate
 - isComplete
 - data-key for dom remove/edit
-- toEdit (incl isComplete)
+- toEdit (incl isComplete) AND ability to change projects from the list
 
 app logic object or module?
 - creates todos
