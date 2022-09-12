@@ -78,13 +78,17 @@ aside p {
 }
 
 /*
-to add padding to match aside start
 to fix bold font
-to fix width of the aside button
 to ADD transition!
 */
 
 .main {
   background-color: #ffffff;
   padding: 2rem;
+}
+
+.main li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
 }

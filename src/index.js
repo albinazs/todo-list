@@ -1,19 +1,23 @@
 import "./style.css";
-
-let project = [];
-
+import { format } from 'date-fns';
+import {renderTodos} from './DOM.js';
 
 class TodoItem {
   constructor(description, dueDate) {
     this.description = description;
     this.dueDate = dueDate;
+    this.isComplete = false;
   }
 
   editTodo(newDescription, newDueDate) {
     this.description = newDescription;
     this.dueDate = newDueDate;
   }
-}
+
+  completeTodo() {
+    this.isComplete = true;
+  }
+};
 
 const toClean = new TodoItem("to clean room", "2pm");
 console.log(toClean);
@@ -34,31 +38,33 @@ class Project {
   addTodo(todoItem) {
     this.todoList.push(todoItem);
   }
-}
+};
 
-const demoProject = new Project('demo');
+export const demoProject = new Project("demo");
 console.log(demoProject);
 
 demoProject.addTodo(toClean);
 console.log(demoProject);
 
+const todoApp = {
+  projects: [],
+  addProject(project) {
+    this.projects.push(project);
+  },
+};
+
+todoApp.addProject(demoProject);
+console.log(todoApp);
 
 
-
+renderTodos();
 /* 
-todo app
-
-dom
-- inbox (all)
-- today 
-- this week
-- completed
-- projects list
-
 {todo list}
 - [projects]
 - toAdd project
 - toRemove project
+! - show inbox, today, next 7 days and completed
+loop through all projects todolists and list those with duedate = 
 
 {project}
 - title
