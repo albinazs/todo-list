@@ -1,6 +1,6 @@
 import "./style.css";
 import { format } from "date-fns";
-import { renderInbox } from "./DOM";
+import { renderInbox, renderProjects } from "./DOM";
 
 /* data structures 
 todoApp
@@ -62,6 +62,7 @@ todoApp.addProject(demoProject);
 todoApp.addProject(demoProject2);
 
 renderInbox();
+renderProjects();
 
 /* 
 mornings weather should be calm

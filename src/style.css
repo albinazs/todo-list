@@ -77,6 +77,20 @@ aside p {
   font-weight: 900;
 }
 
+.projectlist li {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.projectlist li p{
+    font-size: 1rem;
+  }
+
+.projectlist li:hover {
+  background-color: #f0eded;
+}
+
 /*
 to fix bold font
 to ADD transition!

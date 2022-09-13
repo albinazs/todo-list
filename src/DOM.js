@@ -37,8 +37,30 @@ export const renderInbox = () => {
       itemLine.appendChild(editBtn);
       itemLine.appendChild(deleteBtn);
       todos.appendChild(itemLine);
-      console.log(todoApp);
+      console.log("hello");
     });
   });
 };
 
+const clearTodos = () => {
+  todos.innerHTML = "";
+};
+
+const projects = document.querySelector(".projectlist");
+
+export const renderProjects = () => {
+  todoApp.projects.forEach((project) => {
+    const projectLine = createHtmlElement("li", null, null);
+    const icon = createHtmlElement("span", "material-symbols-outlined", "list");
+    const projectName = createHtmlElement("p", null, `${project.description}`);
+    projectLine.appendChild(icon);
+    projectLine.appendChild(projectName);
+    projects.appendChild(projectLine);
+  });
+};
+
+const inboxBtn = document.querySelector("#inbox");
+inboxBtn.addEventListener("click", () => {
+  clearTodos();
+  renderInbox();
+});
