@@ -1,7 +1,6 @@
 import "./style.css";
 import { format } from "date-fns";
-import { renderTodos } from "./DOM.js";
-import { createHtmlElement } from "./DOM.js";
+import { renderInbox } from "./DOM";
 
 /* data structures 
 todoApp
@@ -61,43 +60,22 @@ demoProject2.addTodo(toRun);
 
 todoApp.addProject(demoProject);
 todoApp.addProject(demoProject2);
-console.log(todoApp);
 
-const todos = document.querySelector(".todos");
-
-export const renderTodos2 = () => {
-  todoApp.projects.forEach((project) => {
-    project.todoList.forEach((item) => {
-      const itemLine = createHtmlElement("li", null, null);
-      const descP = createHtmlElement("p", null, `${item.description}`);
-      const dateP = createHtmlElement("p", null, `${item.dueDate}`);
-      const editBtn = createHtmlElement(
-        "button",
-        "material-symbols-outlined",
-        "edit"
-      );
-      const deleteBtn = createHtmlElement(
-        "button",
-        "material-symbols-outlined",
-        "delete"
-      );
-      itemLine.appendChild(descP);
-      itemLine.appendChild(dateP);
-      itemLine.appendChild(editBtn);
-      itemLine.appendChild(deleteBtn);
-      todos.appendChild(itemLine);
-    });
-  });
-};
-
-renderTodos2();
+renderInbox();
 
 /* 
+mornings weather should be calm
+10-12 private
+8-11.30
+8-9.30/10 
+elearning last week of sept
+24hours after dive no flight troodos
+2/3/4
 
 functions to run on load:
 1) render inbox todos
 2) render projects
- 
+
 {todoApp}
 - [projects]
 - toAdd project

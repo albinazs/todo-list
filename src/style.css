@@ -94,8 +94,9 @@ to ADD transition!
   cursor: pointer;
 }
 
-.main li p:first-child {
+.main li p:first-of-type {
   margin-right: auto;
+  margin-left: 10px;
 }
 
 .main li button {
