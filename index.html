@@ -7,6 +7,10 @@
     <title>ToDo list</title>
     <script src="main.js" defer></script>
     <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
     />
@@ -18,22 +22,22 @@
     <aside>
       <ul>
         <li>
-          <button>
+          <button id="inbox">
             <span class="material-symbols-outlined">inbox</span>Inbox
           </button>
         </li>
         <li>
-          <button>
+          <button id="today">
             <span class="material-symbols-outlined">today</span>Today
           </button>
         </li>
         <li>
-          <button>
+          <button id="week">
             <span class="material-symbols-outlined">date_range</span>Next 7 days
           </button>
         </li>
         <li>
-          <button>
+          <button id="complete">
             <span class="material-symbols-outlined">task_alt</span>Completed
           </button>
         </li>
@@ -42,17 +46,10 @@
         <p>Projects</p>
         <button>+</button>
       </div>
-      <ul>
-        <li>
-          <button>
-            <span class="material-symbols-outlined">list</span>Demo project
-          </button>
-        </li>
-      </ul>
+      <ul class="projectlist"></ul>
     </aside>
     <div class="main">
-      <ul class="todos">
-      </ul>
+      <ul class="todos"></ul>
     </div>
   </body>
 </html>
