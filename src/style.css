@@ -39,7 +39,7 @@ aside li span {
   margin-right: 10px;
 }
 
-aside button {
+button {
   background: none;
   color: inherit;
   border: none;
@@ -89,6 +89,28 @@ to ADD transition!
 
 .main li {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   padding: 10px;
+  cursor: pointer;
+}
+
+.main li p:first-child {
+  margin-right: auto;
+}
+
+.main li button {
+  width: auto;
+  padding: 5px 10px;
+}
+
+.main li button:nth-of-type(1) {
+  color: rgb(8, 146, 15);
+}
+
+.main li button:nth-of-type(2) {
+  color: rgb(186, 63, 6);
+}
+
+.main li:hover {
+  background-color: #fafafa;
 }

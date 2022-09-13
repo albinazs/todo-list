@@ -1,6 +1,7 @@
 import "./style.css";
 import { format } from "date-fns";
 import { renderTodos } from "./DOM.js";
+import { createHtmlElement } from "./DOM.js";
 
 /* data structures 
 todoApp
@@ -38,7 +39,7 @@ class Project {
   }
 }
 
-const todoApp = {
+export const todoApp = {
   projects: [],
   addProject(project) {
     this.projects.push(project);
@@ -48,22 +49,62 @@ const todoApp = {
 // demo project and item in todoapp
 const toClean = new TodoItem("to clean room", "2pm");
 toClean.editTodo("to mop", "4pm");
+const toRun = new TodoItem("to run", "5.09");
 
 export const demoProject = new Project("demo");
 
-demoProject.addTodo(toClean);
-todoApp.addProject(demoProject);
+const demoProject2 = new Project("demo2");
 
+demoProject.addTodo(toClean);
+demoProject2.addTodo(toClean);
+demoProject2.addTodo(toRun);
+
+todoApp.addProject(demoProject);
+todoApp.addProject(demoProject2);
 console.log(todoApp);
-renderTodos();
+
+const todos = document.querySelector(".todos");
+
+export const renderTodos2 = () => {
+  todoApp.projects.forEach((project) => {
+    project.todoList.forEach((item) => {
+      const itemLine = createHtmlElement("li", null, null);
+      const descP = createHtmlElement("p", null, `${item.description}`);
+      const dateP = createHtmlElement("p", null, `${item.dueDate}`);
+      const editBtn = createHtmlElement(
+        "button",
+        "material-symbols-outlined",
+        "edit"
+      );
+      const deleteBtn = createHtmlElement(
+        "button",
+        "material-symbols-outlined",
+        "delete"
+      );
+      itemLine.appendChild(descP);
+      itemLine.appendChild(dateP);
+      itemLine.appendChild(editBtn);
+      itemLine.appendChild(deleteBtn);
+      todos.appendChild(itemLine);
+    });
+  });
+};
+
+renderTodos2();
 
 /* 
+
+functions to run on load:
+1) render inbox todos
+2) render projects
+ 
 {todoApp}
 - [projects]
 - toAdd project
 - toRemove project
 ! - show inbox, today, next 7 days and completed
 loop through all projects todolists and list those with duedate = 
+usw filter map foreach - tictactoe ref
 
 {project}
 - title
