@@ -42,6 +42,9 @@ export const renderInbox = () => {
   });
 };
 
+//Extract render todo to reuse
+const renderTodos = () => {};
+
 const clearTodos = () => {
   todos.innerHTML = "";
 };
@@ -55,6 +58,34 @@ export const renderProjects = () => {
     const projectName = createHtmlElement("p", null, `${project.description}`);
     projectLine.appendChild(icon);
     projectLine.appendChild(projectName);
+    projectLine.addEventListener("click", () => {
+      clearTodos();
+      //Ectract render todo function
+      project.todoList.forEach((item) => {
+        const itemLine = createHtmlElement("li", null, null);
+        const check = createHtmlElement("input", null, null);
+        check.setAttribute("type", "checkbox");
+        const descP = createHtmlElement("p", null, `${item.description}`);
+        const dateP = createHtmlElement("p", null, `${item.dueDate}`);
+        const editBtn = createHtmlElement(
+          "button",
+          "material-symbols-outlined",
+          "edit"
+        );
+        const deleteBtn = createHtmlElement(
+          "button",
+          "material-symbols-outlined",
+          "delete"
+        );
+        itemLine.appendChild(check);
+        itemLine.appendChild(descP);
+        itemLine.appendChild(dateP);
+        itemLine.appendChild(editBtn);
+        itemLine.appendChild(deleteBtn);
+        todos.appendChild(itemLine);
+        console.log("hello");
+      });
+    });
     projects.appendChild(projectLine);
   });
 };
@@ -64,3 +95,7 @@ inboxBtn.addEventListener("click", () => {
   clearTodos();
   renderInbox();
 });
+
+//const renderProjectTodos = (project) => {
+//project.
+//}
