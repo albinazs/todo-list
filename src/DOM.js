@@ -15,35 +15,43 @@ const todos = document.querySelector(".todos");
 
 export const renderInbox = () => {
   todoApp.projects.forEach((project) => {
-    project.todoList.forEach((item) => {
-      const itemLine = createHtmlElement("li", null, null);
-      const check = createHtmlElement("input", null, null);
-      check.setAttribute("type", "checkbox");
-      const descP = createHtmlElement("p", null, `${item.description}`);
-      const dateP = createHtmlElement("p", null, `${item.dueDate}`);
-      const editBtn = createHtmlElement(
-        "button",
-        "material-symbols-outlined",
-        "edit"
-      );
-      const deleteBtn = createHtmlElement(
-        "button",
-        "material-symbols-outlined",
-        "delete"
-      );
-      itemLine.appendChild(check);
-      itemLine.appendChild(descP);
-      itemLine.appendChild(dateP);
-      itemLine.appendChild(editBtn);
-      itemLine.appendChild(deleteBtn);
-      todos.appendChild(itemLine);
-      console.log("hello");
+    project.todoList.forEach((item, index) => {
+      renderTodos(item, index);
     });
   });
 };
 
-//Extract render todo to reuse
-const renderTodos = () => {};
+const renderTodos = (item, index) => {
+  const itemLine = createHtmlElement("li", null, null);
+  itemLine.dataset.index = index;
+  const check = createHtmlElement("input", null, null);
+  check.setAttribute("type", "checkbox");
+  const descP = createHtmlElement("p", null, `${item.description}`);
+  const dateP = createHtmlElement("p", null, `${item.dueDate}`);
+  const editBtn = createHtmlElement(
+    "button",
+    "material-symbols-outlined",
+    "edit"
+  );
+  const deleteBtn = createHtmlElement(
+    "button",
+    "material-symbols-outlined",
+    "delete"
+  );
+  itemLine.appendChild(check);
+  itemLine.appendChild(descP);
+  itemLine.appendChild(dateP);
+  itemLine.appendChild(editBtn);
+  itemLine.appendChild(deleteBtn);
+  todos.appendChild(itemLine);
+  console.log("hello");
+};
+
+const removeTodo = (e) => {
+  let toremove = e.target.dataset.index;
+  // how tp know which project this todo is? MAYBE ADD AS A METHOD to Project!?
+  //maybe class or another data key = name of project? or it's index in todoApp?
+};
 
 const clearTodos = () => {
   todos.innerHTML = "";
@@ -60,30 +68,8 @@ export const renderProjects = () => {
     projectLine.appendChild(projectName);
     projectLine.addEventListener("click", () => {
       clearTodos();
-      //Ectract render todo function
-      project.todoList.forEach((item) => {
-        const itemLine = createHtmlElement("li", null, null);
-        const check = createHtmlElement("input", null, null);
-        check.setAttribute("type", "checkbox");
-        const descP = createHtmlElement("p", null, `${item.description}`);
-        const dateP = createHtmlElement("p", null, `${item.dueDate}`);
-        const editBtn = createHtmlElement(
-          "button",
-          "material-symbols-outlined",
-          "edit"
-        );
-        const deleteBtn = createHtmlElement(
-          "button",
-          "material-symbols-outlined",
-          "delete"
-        );
-        itemLine.appendChild(check);
-        itemLine.appendChild(descP);
-        itemLine.appendChild(dateP);
-        itemLine.appendChild(editBtn);
-        itemLine.appendChild(deleteBtn);
-        todos.appendChild(itemLine);
-        console.log("hello");
+      project.todoList.forEach((item, index) => {
+        renderTodos(item, index);
       });
     });
     projects.appendChild(projectLine);

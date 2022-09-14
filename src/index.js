@@ -36,12 +36,21 @@ class Project {
   addTodo(todoItem) {
     this.todoList.push(todoItem);
   }
+
+  removeTodo(index) {
+    this.todoList = this.todoList.slice(index, 1);
+  }
 }
 
 export const todoApp = {
   projects: [],
+
   addProject(project) {
     this.projects.push(project);
+  },
+
+  removeProject(index) {
+    this.projects = this.projects.slice(index, 1);
   },
 };
 
@@ -65,25 +74,22 @@ renderInbox();
 renderProjects();
 
 /* 
-mornings weather should be calm
-10-12 private
-8-11.30
-8-9.30/10 
-elearning last week of sept
-24hours after dive no flight troodos
-2/3/4
+TODO
+1. abstract away render todos
+2. remove projects and todos - with buttons clicked (maybe edit task only while button is cliked)
+3. create forms to input projects and todos, add logics to it
+3.1 set todos as complete
+4. work with dates and today/week buttons - filter array tictactoe
 
-functions to run on load:
-1) render inbox todos
-2) render projects
+5. completed tasks logics?
+6. css: burger for mobile, maybe transition?
+7. add localstorage
 
 {todoApp}
 - [projects]
 - toAdd project
 - toRemove project
 ! - show inbox, today, next 7 days and completed
-loop through all projects todolists and list those with duedate = 
-usw filter map foreach - tictactoe ref
 
 {project}
 - title
@@ -100,17 +106,6 @@ usw filter map foreach - tictactoe ref
 - data-key for dom remove/edit
 - toEdit (incl isComplete) AND ability to change projects from the list
 
-app logic object or module?
-- creates todos
-- setting todos as complete
-- changing priority, date, desc etc
-
-DOMdtuff
-- visualise app logic
-
 ref https://artis-dev.github.io/to-do-list/#
 
-TODO
-- use burger nav
-- use transition
  */
