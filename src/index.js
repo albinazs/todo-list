@@ -38,7 +38,7 @@ class Project {
   }
 
   removeTodo(index) {
-    this.todoList = this.todoList.slice(index, 1);
+    this.todoList.splice(index, 1);
   }
 }
 
@@ -50,7 +50,8 @@ export const todoApp = {
   },
 
   removeProject(index) {
-    this.projects = this.projects.slice(index, 1);
+    console.log(index);
+    this.projects.splice(index, 1);
   },
 };
 
@@ -69,6 +70,9 @@ demoProject2.addTodo(toRun);
 
 todoApp.addProject(demoProject);
 todoApp.addProject(demoProject2);
+
+// 0 - demo
+// 1 - demo2
 
 renderInbox();
 renderProjects();

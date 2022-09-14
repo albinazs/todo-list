@@ -1,5 +1,8 @@
 import { todoApp } from ".";
 
+const todos = document.querySelector(".todos");
+const projects = document.querySelector(".projectlist");
+
 export const createHtmlElement = (type, htmlClass, textContent) => {
   const htmlElement = document.createElement(type);
   if (htmlClass) {
@@ -9,16 +12,6 @@ export const createHtmlElement = (type, htmlClass, textContent) => {
     htmlElement.textContent = textContent;
   }
   return htmlElement;
-};
-
-const todos = document.querySelector(".todos");
-
-export const renderInbox = () => {
-  todoApp.projects.forEach((project) => {
-    project.todoList.forEach((item, index) => {
-      renderTodos(item, index);
-    });
-  });
 };
 
 const renderTodos = (item, index) => {
@@ -47,32 +40,62 @@ const renderTodos = (item, index) => {
   console.log("hello");
 };
 
-const removeTodo = (e) => {
-  let toremove = e.target.dataset.index;
-  // how tp know which project this todo is? MAYBE ADD AS A METHOD to Project!?
-  //maybe class or another data key = name of project? or it's index in todoApp?
-};
-
 const clearTodos = () => {
   todos.innerHTML = "";
 };
 
-const projects = document.querySelector(".projectlist");
+const removeTodo = (e) => {
+  let toremove = e.target.dataset.index;
+};
 
 export const renderProjects = () => {
-  todoApp.projects.forEach((project) => {
+  todoApp.projects.forEach((project, index) => {
     const projectLine = createHtmlElement("li", null, null);
     const icon = createHtmlElement("span", "material-symbols-outlined", "list");
     const projectName = createHtmlElement("p", null, `${project.description}`);
+    const deleteBtn = createHtmlElement(
+      "button",
+      "material-symbols-outlined",
+      "delete"
+    );
+    deleteBtn.dataset.index = index;
     projectLine.appendChild(icon);
     projectLine.appendChild(projectName);
+    projectLine.appendChild(deleteBtn);
     projectLine.addEventListener("click", () => {
       clearTodos();
       project.todoList.forEach((item, index) => {
         renderTodos(item, index);
       });
     });
+    //test
+    deleteBtn.addEventListener("click", (e) => {
+      removeProject(e);
+    });
+
     projects.appendChild(projectLine);
+  });
+};
+
+const removeProject = (e) => {
+  e.stopPropagation();
+  console.log("yes");
+  const toDelete = e.target.dataset.index;
+  todoApp.removeProject(toDelete);
+  clearProjects();
+  renderProjects();
+  console.log(todoApp);
+};
+
+const clearProjects = () => {
+  projects.innerHTML = "";
+};
+
+export const renderInbox = () => {
+  todoApp.projects.forEach((project) => {
+    project.todoList.forEach((item, index) => {
+      renderTodos(item, index);
+    });
   });
 };
 
@@ -81,7 +104,3 @@ inboxBtn.addEventListener("click", () => {
   clearTodos();
   renderInbox();
 });
-
-//const renderProjectTodos = (project) => {
-//project.
-//}

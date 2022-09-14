@@ -84,12 +84,19 @@ aside p {
   cursor: pointer;
 }
 
-.projectlist li p{
-    font-size: 1rem;
-  }
+.projectlist li p {
+  font-size: 1rem;
+}
 
 .projectlist li:hover {
   background-color: #f0eded;
+}
+
+.projectlist li button {
+  padding: 0;
+  width: auto;
+  margin-left: auto;
+  color: rgb(181, 185, 181);
 }
 
 /*
