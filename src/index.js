@@ -7,9 +7,11 @@ todoApp
 */
 
 class TodoItem {
-  constructor(description, dueDate) {
+  //project assosiation- think
+  constructor(description, dueDate, project) {
     this.description = description;
     this.dueDate = dueDate;
+    this.project = project;
     this.isComplete = false;
   }
 
@@ -56,13 +58,12 @@ export const todoApp = {
 };
 
 // demo project and item in todoapp
-const toClean = new TodoItem("to clean room", "2pm");
-toClean.editTodo("to mop", "4pm");
-const toRun = new TodoItem("to run", "5.09");
 
-export const demoProject = new Project("demo");
-
+const demoProject = new Project("demo");
 const demoProject2 = new Project("demo2");
+
+const toClean = new TodoItem("to clean room", "2pm", "demo");
+const toRun = new TodoItem("to run", "5.09");
 
 demoProject.addTodo(toClean);
 demoProject2.addTodo(toClean);
@@ -71,19 +72,17 @@ demoProject2.addTodo(toRun);
 todoApp.addProject(demoProject);
 todoApp.addProject(demoProject2);
 
-// 0 - demo
-// 1 - demo2
-
 renderInbox();
 renderProjects();
 
 /* 
 TODO
-1. abstract away render todos
-2. remove projects and todos - with buttons clicked (maybe edit task only while button is cliked)
+
+2. remove todos - with buttons clicked
 3. create forms to input projects and todos, add logics to it
 3.1 set todos as complete
 4. work with dates and today/week buttons - filter array tictactoe
++sort for listing (urgents on the top)
 
 5. completed tasks logics?
 6. css: burger for mobile, maybe transition?

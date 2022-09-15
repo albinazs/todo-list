@@ -16,7 +16,7 @@ export const createHtmlElement = (type, htmlClass, textContent) => {
 
 const renderTodos = (item, index) => {
   const itemLine = createHtmlElement("li", null, null);
-  itemLine.dataset.index = index;
+
   const check = createHtmlElement("input", null, null);
   check.setAttribute("type", "checkbox");
   const descP = createHtmlElement("p", null, `${item.description}`);
@@ -31,6 +31,14 @@ const renderTodos = (item, index) => {
     "material-symbols-outlined",
     "delete"
   );
+  deleteBtn.dataset.index = index;
+  //connect with project!
+  deleteBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    console.log("todes");
+    const toDelete = e.target.dataset.index;
+    todoApp.removeProject(toDelete);
+  });
   itemLine.appendChild(check);
   itemLine.appendChild(descP);
   itemLine.appendChild(dateP);
@@ -68,9 +76,10 @@ export const renderProjects = () => {
         renderTodos(item, index);
       });
     });
-    //test
     deleteBtn.addEventListener("click", (e) => {
       removeProject(e);
+      clearTodos();
+      renderInbox();
     });
 
     projects.appendChild(projectLine);
@@ -85,6 +94,7 @@ const removeProject = (e) => {
   clearProjects();
   renderProjects();
   console.log(todoApp);
+  //do i need to remove todos separately?
 };
 
 const clearProjects = () => {
