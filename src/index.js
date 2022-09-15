@@ -78,11 +78,14 @@ renderProjects();
 /* 
 TODO
 
-2. remove todos - with buttons clicked
+IF inbox/today/week - addtask with project to choose
+IF project - addtask function without project to choose
+
 3. create forms to input projects and todos, add logics to it
 3.1 set todos as complete
 4. work with dates and today/week buttons - filter array tictactoe
 +sort for listing (urgents on the top)
+4.1. no projects with the same name - error
 
 5. completed tasks logics?
 6. css: burger for mobile, maybe transition?
