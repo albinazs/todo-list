@@ -1,7 +1,8 @@
-import { todoApp, TodoItem } from ".";
+import { todoApp, Project, TodoItem } from ".";
 
 const todos = document.querySelector(".todos");
 const projects = document.querySelector(".projectlist");
+const addProjectBtn = document.querySelector(".addproject");
 
 export const createHtmlElement = (
   tag,
@@ -62,7 +63,7 @@ const renderTodo = (item, index) => {
 const renderAddTodoButton = (index) => {
   const addTodo = createHtmlElement(
     "button",
-    "addtodo",
+    null,
     "+Add task",
     null,
     //here null turned into a template string
@@ -79,12 +80,17 @@ const inputTodo = (e) => {
   const inputDuedate = createHtmlElement("input", null, null, "text");
   const select = createHtmlElement("select", null, null);
   const submitBtn = createHtmlElement("button", null, "Add", "submit");
+  const cancelBtn = createHtmlElement("button", null, "Cancel", "reset");
 
   inputDescription.required = true;
   inputDescription.setAttribute("placeholder", "Task description");
   select.setAttribute("name", "projects");
 
-  console.log(e.target.dataset.index);
+  //how to optimize? extract and render all again?
+  cancelBtn.addEventListener("click", () => {
+    todos.removeChild(todos.lastChild);
+    renderAddTodoButton(e.target.dataset.index);
+  });
 
   //abstract away these functions
   if (e.target.dataset.index == "null") {
@@ -119,6 +125,7 @@ const inputTodo = (e) => {
     todoInputForm.appendChild(inputDuedate);
     todoInputForm.appendChild(select);
     todoInputForm.appendChild(submitBtn);
+    todoInputForm.appendChild(cancelBtn);
     todos.appendChild(todoInputForm);
   } else {
     const currentProjectIndex = e.target.dataset.index;
@@ -134,6 +141,7 @@ const inputTodo = (e) => {
     todoInputForm.appendChild(inputDescription);
     todoInputForm.appendChild(inputDuedate);
     todoInputForm.appendChild(submitBtn);
+    todoInputForm.appendChild(cancelBtn);
     todos.appendChild(todoInputForm);
   }
 };
@@ -141,6 +149,31 @@ const inputTodo = (e) => {
 const clearTodos = () => {
   todos.innerHTML = "";
 };
+
+addProjectBtn.addEventListener("click", () => {
+  console.log("ok");
+  const projectInputForm = createHtmlElement("form", null, null);
+  const projectDescription = createHtmlElement("input", null, null, "text");
+  const submitBtn = createHtmlElement("button", null, "Add", "submit");
+  const cancelBtn = createHtmlElement("button", null, "Cancel", "reset");
+
+  projectDescription.required = true;
+
+  //abstract away = same as in todos
+  projectInputForm.appendChild(projectDescription);
+  projectInputForm.appendChild(submitBtn);
+  projectInputForm.appendChild(cancelBtn);
+  projects.appendChild(projectInputForm);
+
+  projectInputForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const newProject = new Project(projectDescription.value);
+    todoApp.addProject(newProject);
+    console.log(todoApp);
+    clearProjects();
+    renderProjects();
+  });
+});
 
 export const renderProjects = () => {
   todoApp.projects.forEach((project, index) => {

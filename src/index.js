@@ -80,11 +80,9 @@ renderProjects();
 /* 
 TODO
 
-IF inbox/today/week - addtask with project to choose
-IF project - addtask function without project to choose
-
-3. create forms to input projects and todos, add logics to it
-3.1 set todos as complete
+3. create forms to input projects, add logics to it
+3.0 remove todos
+3.1 edit todos and set todos as complete, edit projects
 4. work with dates and today/week buttons - filter array tictactoe
 +sort for listing (urgents on the top)
 4.1. no projects with the same name - error
