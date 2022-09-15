@@ -6,8 +6,8 @@ import { renderInbox, renderProjects } from "./DOM";
 todoApp
 */
 
-class TodoItem {
-  //project assosiation- think
+export class TodoItem {
+
   constructor(description, dueDate, project) {
     this.description = description;
     this.dueDate = dueDate;
@@ -25,7 +25,9 @@ class TodoItem {
   }
 }
 
-class Project {
+//connection between project and todoitem!!
+
+export class Project {
   constructor(description) {
     this.description = description;
     this.todoList = [];

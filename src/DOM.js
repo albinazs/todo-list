@@ -1,4 +1,4 @@
-import { todoApp } from ".";
+import { todoApp, TodoItem } from ".";
 
 const todos = document.querySelector(".todos");
 const projects = document.querySelector(".projectlist");
@@ -26,7 +26,7 @@ export const createHtmlElement = (
   return htmlElement;
 };
 
-const renderTodos = (item, index) => {
+const renderTodo = (item, index) => {
   const itemLine = createHtmlElement("li", null, null);
   const check = createHtmlElement("input", null, null, "checkbox");
   const descP = createHtmlElement("p", null, `${item.description}`);
@@ -65,6 +65,7 @@ const renderAddTodoButton = (index) => {
     "addtodo",
     "+Add task",
     null,
+    //here null turned into a string null!!!
     `${index}`
   );
   addTodo.addEventListener("click", (e) => inputTodo(e));
@@ -76,32 +77,51 @@ const inputTodo = (e) => {
   const todoInputForm = createHtmlElement("form", null, null);
   const inputDescription = createHtmlElement("input", null, null, "text");
   const inputDuedate = createHtmlElement("input", null, null, "text");
-  const projectList = createHtmlElement("input", null, null);
-  const datalist = createHtmlElement("datalist", null, null);
+  const select = createHtmlElement("select", null, null);
   const submitBtn = createHtmlElement("button", null, "Add", "submit");
 
   inputDescription.required = true;
   inputDescription.setAttribute("placeholder", "Task description");
-  projectList.setAttribute("list", "projects");
-  datalist.setAttribute("id", "projects");
+  select.setAttribute("name", "projects");
 
-  const currentProject = e.target.dataset.index;
+  console.log(e.target.dataset.index);
 
-  todoInputForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    let description = inputDescription.value;
-    let dueDate = inputDuedate.value;
-    todoApp.projects[currentProject].addTodo(description, dueDate);
-    console.log(todoApp);
-  });
+  //abstract away these functions
+  if (e.target.dataset.index == "null") {
+    todoApp.projects.forEach((project) => {
+      const projectOption = createHtmlElement(
+        "option",
+        null,
+        `${project.description}`
+      );
+      projectOption.setAttribute("value", `${project.description}`);
+      select.appendChild(projectOption);
+    });
+    console.log("YYYEP");
+    todoInputForm.appendChild(inputDescription);
+    todoInputForm.appendChild(inputDuedate);
+    todoInputForm.appendChild(select);
+    todoInputForm.appendChild(submitBtn);
+    todos.appendChild(todoInputForm);
+  }
 
-  //to finish with creating options list
-  todoInputForm.appendChild(inputDescription);
-  todoInputForm.appendChild(inputDuedate);
-  todoInputForm.appendChild(projectList);
-  todoInputForm.appendChild(datalist);
-  todoInputForm.appendChild(submitBtn);
-  todos.appendChild(todoInputForm);
+  if (e.target.dataset.index) {
+    const currentProjectIndex = e.target.dataset.index;
+    const currentProject = todoApp.projects[e.target.dataset.index];
+
+    todoInputForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const todoItem = new TodoItem(inputDescription.value, inputDuedate.value);
+      currentProject.addTodo(todoItem);
+      console.log(todoApp);
+      renderProjectTodos(currentProjectIndex);
+    });
+
+    todoInputForm.appendChild(inputDescription);
+    todoInputForm.appendChild(inputDuedate);
+    todoInputForm.appendChild(submitBtn);
+    todos.appendChild(todoInputForm);
+  }
 };
 
 const clearTodos = () => {
@@ -124,11 +144,7 @@ export const renderProjects = () => {
     projectLine.appendChild(projectName);
     projectLine.appendChild(deleteBtn);
     projectLine.addEventListener("click", () => {
-      clearTodos();
-      project.todoList.forEach((item, index) => {
-        renderTodos(item, index);
-      });
-      renderAddTodoButton(index);
+      renderProjectTodos(index);
     });
     deleteBtn.addEventListener("click", (e) => {
       removeProject(e);
@@ -138,6 +154,14 @@ export const renderProjects = () => {
 
     projects.appendChild(projectLine);
   });
+};
+
+const renderProjectTodos = (index) => {
+  clearTodos();
+  todoApp.projects[index].todoList.forEach((item, index) => {
+    renderTodo(item, index);
+  });
+  renderAddTodoButton(index);
 };
 
 const removeProject = (e) => {
@@ -158,10 +182,10 @@ const clearProjects = () => {
 export const renderInbox = () => {
   todoApp.projects.forEach((project) => {
     project.todoList.forEach((item, index) => {
-      renderTodos(item, index);
+      renderTodo(item, index);
     });
   });
-  renderAddTodoButton();
+  renderAddTodoButton(null);
 };
 
 const inboxBtn = document.querySelector("#inbox");
