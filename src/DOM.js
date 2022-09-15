@@ -65,7 +65,7 @@ const renderAddTodoButton = (index) => {
     "addtodo",
     "+Add task",
     null,
-    //here null turned into a string null!!!
+    //here null turned into a template string
     `${index}`
   );
   addTodo.addEventListener("click", (e) => inputTodo(e));
@@ -98,21 +98,35 @@ const inputTodo = (e) => {
       select.appendChild(projectOption);
     });
     console.log("YYYEP");
+
+    //abstract away
+    todoInputForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      console.log(todoApp);
+      console.log(select.value);
+      const currentProjectIndex = todoApp.projects.findIndex(
+        (project) => project.description === `${select.value}`
+      );
+
+      console.log(currentProjectIndex);
+      const todoItem = new TodoItem(inputDescription.value, inputDuedate.value);
+      todoApp.projects[currentProjectIndex].addTodo(todoItem);
+      console.log(todoApp);
+      renderProjectTodos(currentProjectIndex);
+    });
+
     todoInputForm.appendChild(inputDescription);
     todoInputForm.appendChild(inputDuedate);
     todoInputForm.appendChild(select);
     todoInputForm.appendChild(submitBtn);
     todos.appendChild(todoInputForm);
-  }
-
-  if (e.target.dataset.index) {
+  } else {
     const currentProjectIndex = e.target.dataset.index;
-    const currentProject = todoApp.projects[e.target.dataset.index];
 
     todoInputForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const todoItem = new TodoItem(inputDescription.value, inputDuedate.value);
-      currentProject.addTodo(todoItem);
+      todoApp.projects[currentProjectIndex].addTodo(todoItem);
       console.log(todoApp);
       renderProjectTodos(currentProjectIndex);
     });
