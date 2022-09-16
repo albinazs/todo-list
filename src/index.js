@@ -7,7 +7,6 @@ todoApp
 */
 
 export class TodoItem {
-
   constructor(description, dueDate, project) {
     this.description = description;
     this.dueDate = dueDate;
@@ -21,7 +20,7 @@ export class TodoItem {
   }
 
   completeTodo() {
-    this.isComplete = true;
+    this.isComplete = false;
   }
 }
 
@@ -80,7 +79,6 @@ renderProjects();
 /* 
 TODO
 
-3.0 remove todos
 3.1 edit todos and set todos as complete, edit projects
 4. work with dates and today/week buttons - filter array tictactoe
 +sort for listing (urgents on the top)

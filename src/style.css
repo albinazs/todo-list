@@ -137,3 +137,7 @@ to ADD transition!
 .main li:hover {
   background-color: #fafafa;
 }
+
+.check {
+  text-decoration: line-through;
+}

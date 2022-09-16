@@ -10,7 +10,8 @@ export const createHtmlElement = (
   htmlClass,
   textContent,
   type,
-  dataIndex
+  projectIndex,
+  todoIndex
 ) => {
   const htmlElement = document.createElement(tag);
   if (htmlClass) {
@@ -22,13 +23,16 @@ export const createHtmlElement = (
   if (type) {
     htmlElement.setAttribute("type", type);
   }
-  if (dataIndex) {
-    htmlElement.dataset.index = dataIndex;
+  if (projectIndex) {
+    htmlElement.dataset.projectIndex = projectIndex;
+  }
+  if (todoIndex) {
+    htmlElement.dataset.todoIndex = todoIndex;
   }
   return htmlElement;
 };
 
-const renderTodo = (item, todoindex, projectindex) => {
+const renderTodo = (item, todoIndex, projectIndex) => {
   const itemLine = createHtmlElement("li", null, null);
   const check = createHtmlElement("input", null, null, "checkbox");
   const descP = createHtmlElement("p", null, `${item.description}`);
@@ -36,26 +40,57 @@ const renderTodo = (item, todoindex, projectindex) => {
   const editBtn = createHtmlElement(
     "button",
     "material-symbols-outlined",
-    "edit"
+    "edit",
+    null,
+    null,
+    `${todoIndex}`
   );
   const deleteBtn = createHtmlElement(
     "button",
     "material-symbols-outlined",
     "delete",
     null,
-    `${todoindex}`
+    null,
+    `${todoIndex}`
   );
-  deleteBtn.dataset.projectindex = projectindex;
-  console.log(projectindex);
 
-  deleteBtn.addEventListener("click", (e) => {
+  check.addEventListener("change", () => {
+    if (check.checked) {
+      descP.classList.add("check");
+      dateP.classList.add("check");
+      item.isComplete = true;
+      console.log(item.isComplete);
+    } else {
+      descP.classList.remove("check");
+      dateP.classList.remove("check");
+      item.isComplete = false;
+      console.log(item.isComplete);
+    }
+  });
+
+  //DOESNT WORK!
+
+  editBtn.dataset.projectIndex = projectIndex;
+  editBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    todoApp.projects[e.target.dataset.projectindex].removeTodo(
-      e.target.dataset.index
-    );
+    console.log("yap");
+    inputTodo(e);
     clearTodos();
+    //where are you on a page?
     renderInbox();
   });
+
+  deleteBtn.dataset.projectIndex = projectIndex;
+  deleteBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    todoApp.projects[e.target.dataset.projectIndex].removeTodo(
+      e.target.dataset.todoIndex
+    );
+    clearTodos();
+    //where are you on a page?
+    renderInbox();
+  });
+
   itemLine.appendChild(check);
   itemLine.appendChild(descP);
   itemLine.appendChild(dateP);
@@ -64,20 +99,21 @@ const renderTodo = (item, todoindex, projectindex) => {
   todos.appendChild(itemLine);
 };
 
-const renderAddTodoButton = (index) => {
+const renderAddTodoButton = (projectIndex) => {
   const addTodo = createHtmlElement(
     "button",
     null,
     "+Add task",
     null,
     //here null turned into a template string
-    `${index}`
+    `${projectIndex}`
   );
   addTodo.addEventListener("click", (e) => inputTodo(e));
   todos.appendChild(addTodo);
 };
 
 const inputTodo = (e) => {
+  console.log(todos.lastChild);
   todos.removeChild(todos.lastChild);
   const todoInputForm = createHtmlElement("form", null, null);
   const inputDescription = createHtmlElement("input", null, null, "text");
@@ -93,11 +129,11 @@ const inputTodo = (e) => {
   //how to optimize? extract and render all again?
   cancelBtn.addEventListener("click", () => {
     todos.removeChild(todos.lastChild);
-    renderAddTodoButton(e.target.dataset.index);
+    renderAddTodoButton(e.target.dataset.projectIndex);
   });
 
   //abstract away these functions
-  if (e.target.dataset.index == "null") {
+  if (e.target.dataset.projectIndex == "null") {
     todoApp.projects.forEach((project) => {
       const projectOption = createHtmlElement(
         "option",
@@ -129,8 +165,9 @@ const inputTodo = (e) => {
     todoInputForm.appendChild(cancelBtn);
     todos.appendChild(todoInputForm);
   } else {
-    const currentProjectIndex = e.target.dataset.index;
+    const currentProjectIndex = e.target.dataset.projectIndex;
 
+    console.log("test");
     todoInputForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const todoItem = new TodoItem(inputDescription.value, inputDuedate.value);
@@ -176,7 +213,7 @@ const addProject = () => {
 };
 
 export const renderProjects = () => {
-  todoApp.projects.forEach((project, index) => {
+  todoApp.projects.forEach((project, projectIndex) => {
     const projectLine = createHtmlElement("li", null, null);
     const icon = createHtmlElement("span", "material-symbols-outlined", "list");
     const projectName = createHtmlElement("p", null, `${project.description}`);
@@ -185,13 +222,13 @@ export const renderProjects = () => {
       "material-symbols-outlined",
       "delete",
       null,
-      `${index}`
+      `${projectIndex}`
     );
     projectLine.appendChild(icon);
     projectLine.appendChild(projectName);
     projectLine.appendChild(deleteBtn);
     projectLine.addEventListener("click", () => {
-      renderProjectTodos(index);
+      renderProjectTodos(projectIndex);
     });
     deleteBtn.addEventListener("click", (e) => {
       removeProject(e);
@@ -203,18 +240,18 @@ export const renderProjects = () => {
   });
 };
 
-const renderProjectTodos = (index) => {
+const renderProjectTodos = (projectIndex) => {
   clearTodos();
-  todoApp.projects[index].todoList.forEach((item, index) => {
+  todoApp.projects[projectIndex].todoList.forEach((item, index) => {
     renderTodo(item, index);
   });
-  renderAddTodoButton(index);
+  renderAddTodoButton(projectIndex);
 };
 
 const removeProject = (e) => {
   e.stopPropagation();
   console.log("yes");
-  const toDelete = e.target.dataset.index;
+  const toDelete = e.target.dataset.projectIndex;
   todoApp.removeProject(toDelete);
   clearProjects();
   renderProjects();
@@ -226,9 +263,9 @@ const clearProjects = () => {
 };
 
 export const renderInbox = () => {
-  todoApp.projects.forEach((project, projectindex) => {
+  todoApp.projects.forEach((project, projectIndex) => {
     project.todoList.forEach((item, todoindex) => {
-      renderTodo(item, todoindex, projectindex);
+      renderTodo(item, todoindex, projectIndex);
     });
   });
   renderAddTodoButton(null);
