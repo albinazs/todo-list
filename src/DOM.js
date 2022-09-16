@@ -3,7 +3,9 @@ import { todoApp, Project, TodoItem } from ".";
 const todos = document.querySelector(".todos");
 const projects = document.querySelector(".projectlist");
 const inboxBtn = document.querySelector("#inbox");
+const completeBtn = document.querySelector("#complete");
 const addProjectBtn = document.querySelector(".addproject");
+let showComplete = false;
 
 export const createHtmlElement = (
   tag,
@@ -54,30 +56,34 @@ const renderTodo = (item, todoIndex, projectIndex) => {
     `${todoIndex}`
   );
 
+  if (item.isComplete === true) {
+    check.checked = true;
+    descP.classList.add("check");
+    dateP.classList.add("check");
+  }
+
+  //rework logics - addclasslist if isComplete = true
   check.addEventListener("change", () => {
     if (check.checked) {
       descP.classList.add("check");
       dateP.classList.add("check");
       item.isComplete = true;
-      console.log(item.isComplete);
     } else {
       descP.classList.remove("check");
       dateP.classList.remove("check");
       item.isComplete = false;
-      console.log(item.isComplete);
+      if (showComplete === true) {
+        renderComplete();
+        showComplete = false;
+      }
     }
   });
-
-  //DOESNT WORK!
 
   editBtn.dataset.projectIndex = projectIndex;
   editBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     console.log("yap");
     inputTodo(e);
-    clearTodos();
-    //where are you on a page?
-    renderInbox();
   });
 
   deleteBtn.dataset.projectIndex = projectIndex;
@@ -131,6 +137,34 @@ const inputTodo = (e) => {
     todos.removeChild(todos.lastChild);
     renderAddTodoButton(e.target.dataset.projectIndex);
   });
+
+  if (e.target.dataset.todoIndex) {
+    console.log(e.target.dataset.todoIndex);
+    console.log(e.target.dataset.projectIndex);
+    const currentProjectIndex = e.target.dataset.projectIndex;
+    const currentTodo =
+      todoApp.projects[e.target.dataset.projectIndex].todoList[
+        e.target.dataset.todoIndex
+      ];
+    console.log(currentTodo);
+
+    inputDescription.value = currentTodo.description;
+    inputDuedate.value = currentTodo.dueDate;
+    todoInputForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      currentTodo.editTodo(inputDescription.value, inputDuedate.value);
+      console.log(todoApp);
+      //where are we on the page?
+      renderProjectTodos(currentProjectIndex);
+    });
+
+    todoInputForm.appendChild(inputDescription);
+    todoInputForm.appendChild(inputDuedate);
+    todoInputForm.appendChild(submitBtn);
+    todoInputForm.appendChild(cancelBtn);
+    todos.appendChild(todoInputForm);
+    return;
+  }
 
   //abstract away these functions
   if (e.target.dataset.projectIndex == "null") {
@@ -242,8 +276,8 @@ export const renderProjects = () => {
 
 const renderProjectTodos = (projectIndex) => {
   clearTodos();
-  todoApp.projects[projectIndex].todoList.forEach((item, index) => {
-    renderTodo(item, index);
+  todoApp.projects[projectIndex].todoList.forEach((item, todoIndex) => {
+    renderTodo(item, todoIndex, projectIndex);
   });
   renderAddTodoButton(projectIndex);
 };
@@ -271,9 +305,27 @@ export const renderInbox = () => {
   renderAddTodoButton(null);
 };
 
+const renderComplete = () => {
+  todoApp.projects.forEach((project, projectIndex) => {
+    const completedTodos = project.todoList.filter(
+      (todo) => todo.isComplete === true
+    );
+    showComplete = true;
+    console.log(completedTodos);
+    completedTodos.forEach((item, todoindex) => {
+      renderTodo(item, todoindex, projectIndex);
+    });
+  });
+};
+
 inboxBtn.addEventListener("click", () => {
   clearTodos();
   renderInbox();
+});
+
+completeBtn.addEventListener("click", () => {
+  clearTodos();
+  renderComplete();
 });
 
 addProjectBtn.addEventListener("click", () => addProject());

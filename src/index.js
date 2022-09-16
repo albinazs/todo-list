@@ -65,9 +65,10 @@ const demoProject2 = new Project("demo2");
 
 const toClean = new TodoItem("to clean room", "2pm", "demo");
 const toRun = new TodoItem("to run", "5.09");
+const toClean2 = new TodoItem("to clean room", "2pm", "demo");
 
 demoProject.addTodo(toClean);
-demoProject2.addTodo(toClean);
+demoProject2.addTodo(toClean2);
 demoProject2.addTodo(toRun);
 
 todoApp.addProject(demoProject);
