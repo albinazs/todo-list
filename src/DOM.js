@@ -2,6 +2,7 @@ import { todoApp, Project, TodoItem } from ".";
 
 const todos = document.querySelector(".todos");
 const projects = document.querySelector(".projectlist");
+const inboxBtn = document.querySelector("#inbox");
 const addProjectBtn = document.querySelector(".addproject");
 
 export const createHtmlElement = (
@@ -27,7 +28,7 @@ export const createHtmlElement = (
   return htmlElement;
 };
 
-const renderTodo = (item, index) => {
+const renderTodo = (item, todoindex, projectindex) => {
   const itemLine = createHtmlElement("li", null, null);
   const check = createHtmlElement("input", null, null, "checkbox");
   const descP = createHtmlElement("p", null, `${item.description}`);
@@ -42,15 +43,18 @@ const renderTodo = (item, index) => {
     "material-symbols-outlined",
     "delete",
     null,
-    `${index}`
+    `${todoindex}`
   );
+  deleteBtn.dataset.projectindex = projectindex;
+  console.log(projectindex);
 
-  //connect with project!
   deleteBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    //console.log("todes");
-    //const toDelete = e.target.dataset.index;
-    //todoApp.removeProject(toDelete);
+    todoApp.projects[e.target.dataset.projectindex].removeTodo(
+      e.target.dataset.index
+    );
+    clearTodos();
+    renderInbox();
   });
   itemLine.appendChild(check);
   itemLine.appendChild(descP);
@@ -105,16 +109,13 @@ const inputTodo = (e) => {
     });
     console.log("YYYEP");
 
-    //abstract away
     todoInputForm.addEventListener("submit", (e) => {
       e.preventDefault();
       console.log(todoApp);
-      console.log(select.value);
       const currentProjectIndex = todoApp.projects.findIndex(
         (project) => project.description === `${select.value}`
       );
 
-      console.log(currentProjectIndex);
       const todoItem = new TodoItem(inputDescription.value, inputDuedate.value);
       todoApp.projects[currentProjectIndex].addTodo(todoItem);
       console.log(todoApp);
@@ -150,7 +151,7 @@ const clearTodos = () => {
   todos.innerHTML = "";
 };
 
-addProjectBtn.addEventListener("click", () => {
+const addProject = () => {
   console.log("ok");
   const projectInputForm = createHtmlElement("form", null, null);
   const projectDescription = createHtmlElement("input", null, null, "text");
@@ -159,7 +160,6 @@ addProjectBtn.addEventListener("click", () => {
 
   projectDescription.required = true;
 
-  //abstract away = same as in todos
   projectInputForm.appendChild(projectDescription);
   projectInputForm.appendChild(submitBtn);
   projectInputForm.appendChild(cancelBtn);
@@ -173,7 +173,7 @@ addProjectBtn.addEventListener("click", () => {
     clearProjects();
     renderProjects();
   });
-});
+};
 
 export const renderProjects = () => {
   todoApp.projects.forEach((project, index) => {
@@ -219,7 +219,6 @@ const removeProject = (e) => {
   clearProjects();
   renderProjects();
   console.log(todoApp);
-  //do i need to remove todos separately?
 };
 
 const clearProjects = () => {
@@ -227,16 +226,17 @@ const clearProjects = () => {
 };
 
 export const renderInbox = () => {
-  todoApp.projects.forEach((project) => {
-    project.todoList.forEach((item, index) => {
-      renderTodo(item, index);
+  todoApp.projects.forEach((project, projectindex) => {
+    project.todoList.forEach((item, todoindex) => {
+      renderTodo(item, todoindex, projectindex);
     });
   });
   renderAddTodoButton(null);
 };
 
-const inboxBtn = document.querySelector("#inbox");
 inboxBtn.addEventListener("click", () => {
   clearTodos();
   renderInbox();
 });
+
+addProjectBtn.addEventListener("click", () => addProject());

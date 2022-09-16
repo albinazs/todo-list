@@ -80,14 +80,12 @@ renderProjects();
 /* 
 TODO
 
-3. create forms to input projects, add logics to it
 3.0 remove todos
 3.1 edit todos and set todos as complete, edit projects
 4. work with dates and today/week buttons - filter array tictactoe
 +sort for listing (urgents on the top)
 4.1. no projects with the same name - error
 
-5. completed tasks logics?
 6. css: burger for mobile, maybe transition?
 7. add localstorage
 
@@ -99,7 +97,6 @@ TODO
 
 {project}
 - title
-- data-key === array index for dom remove/edit
 - [todo items]
 - toEdit project
 - toAdd todo
