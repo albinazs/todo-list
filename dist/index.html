@@ -46,10 +46,50 @@
         <p>Projects</p>
         <button class="addproject">+</button>
       </div>
-      <ul class="projectlist"></ul>
+      <ul class="projectlist">
+        <template id="project-template">
+          <li>
+            <span class="material-symbols-outlined">list</span>
+            <p></p>
+            <button class="material-symbols-outlined">Delete</button>
+          </li>
+        </template>
+      </ul>
+      <template id="add-project-template">
+        <form>
+          <input type="text" name="" id="" required />
+          <button type="submit">Add</button>
+          <button type="reset">Cancel</button>
+        </form>
+      </template>
     </aside>
     <div class="main">
-      <ul class="todos"></ul>
+      <ul class="todos">
+        <template id="todo-template">
+          <li>
+            <input type="checkbox" name="" id="" />
+            <p class="desc"></p>
+            <p class="date"></p>
+            <button class="material-symbols-outlined">Edit</button>
+            <button class="material-symbols-outlined">Delete</button>
+          </li>
+        </template>
+      </ul>
+      <template id="add-todo-template">
+        <form>
+          <input
+            type="text"
+            name=""
+            id=""
+            required
+            placeholder="Task description"
+          />
+          <input type="date" name="" id="" />
+          <select name="projects" id=""></select>
+          <button type="submit">Add</button>
+          <button type="reset">Cancel</button>
+        </form>
+      </template>
     </div>
   </body>
 </html>

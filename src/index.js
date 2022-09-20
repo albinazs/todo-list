@@ -2,15 +2,10 @@ import "./style.css";
 import { format } from "date-fns";
 import { renderInbox, renderProjects } from "./DOM";
 
-/* data structures 
-todoApp
-*/
-
 export class TodoItem {
-  constructor(description, dueDate, project) {
+  constructor(description, dueDate) {
     this.description = description;
     this.dueDate = dueDate;
-    this.project = project;
     this.isComplete = false;
   }
 
@@ -23,8 +18,6 @@ export class TodoItem {
     this.isComplete = false;
   }
 }
-
-//connection between project and todoitem!!
 
 export class Project {
   constructor(description) {
@@ -53,19 +46,16 @@ export const todoApp = {
   },
 
   removeProject(index) {
-    console.log(index);
     this.projects.splice(index, 1);
   },
 };
 
-// demo project and item in todoapp
+const demoProject = new Project("Demo project");
+const demoProject2 = new Project("Demo project2");
 
-const demoProject = new Project("demo");
-const demoProject2 = new Project("demo2");
-
-const toClean = new TodoItem("to clean room", "2pm", "demo");
+const toClean = new TodoItem("to clean bath", "5pm");
 const toRun = new TodoItem("to run", "5.09");
-const toClean2 = new TodoItem("to clean room", "2pm", "demo");
+const toClean2 = new TodoItem("to clean room", "2pm");
 
 demoProject.addTodo(toClean);
 demoProject2.addTodo(toClean2);
@@ -80,34 +70,15 @@ renderProjects();
 /* 
 TODO
 
-3.1 edit todos and set todos as complete, edit projects
+-- templates to clean code in DOM
+-- where are we on the page
+-- local storage
+
+3.1 uncomplete todos and render accordingly
 4. work with dates and today/week buttons - filter array tictactoe
 +sort for listing (urgents on the top)
 4.1. no projects with the same name - error
-
 6. css: burger for mobile, maybe transition?
 7. add localstorage
-
-{todoApp}
-- [projects]
-- toAdd project
-- toRemove project
-! - show inbox, today, next 7 days and completed
-
-{project}
-- title
-- [todo items]
-- toEdit project
-- toAdd todo
-- toRemove todo
-
-{todo item}:
-- desc
-- dueDate
-- isComplete
-- data-key for dom remove/edit
-- toEdit (incl isComplete) AND ability to change projects from the list
-
-ref https://artis-dev.github.io/to-do-list/#
 
  */

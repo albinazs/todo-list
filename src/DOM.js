@@ -5,64 +5,30 @@ const projects = document.querySelector(".projectlist");
 const inboxBtn = document.querySelector("#inbox");
 const completeBtn = document.querySelector("#complete");
 const addProjectBtn = document.querySelector(".addproject");
-let showComplete = false;
-
-export const createHtmlElement = (
-  tag,
-  htmlClass,
-  textContent,
-  type,
-  projectIndex,
-  todoIndex
-) => {
-  const htmlElement = document.createElement(tag);
-  if (htmlClass) {
-    htmlElement.classList.add(htmlClass);
-  }
-  if (textContent) {
-    htmlElement.textContent = textContent;
-  }
-  if (type) {
-    htmlElement.setAttribute("type", type);
-  }
-  if (projectIndex) {
-    htmlElement.dataset.projectIndex = projectIndex;
-  }
-  if (todoIndex) {
-    htmlElement.dataset.todoIndex = todoIndex;
-  }
-  return htmlElement;
-};
+const projectTemplateHTML = document.querySelector("#project-template");
+const todoTemplateHTML = document.querySelector("#todo-template");
+const addProjectTemplateHTML = document.querySelector("#add-project-template");
+const addTodoTemplateHTML = document.querySelector("#add-todo-template");
 
 const renderTodo = (item, todoIndex, projectIndex) => {
-  const itemLine = createHtmlElement("li", null, null);
-  const check = createHtmlElement("input", null, null, "checkbox");
-  const descP = createHtmlElement("p", null, `${item.description}`);
-  const dateP = createHtmlElement("p", null, `${item.dueDate}`);
-  const editBtn = createHtmlElement(
-    "button",
-    "material-symbols-outlined",
-    "edit",
-    null,
-    null,
-    `${todoIndex}`
-  );
-  const deleteBtn = createHtmlElement(
-    "button",
-    "material-symbols-outlined",
-    "delete",
-    null,
-    null,
-    `${todoIndex}`
-  );
+  const todoTemplate = document.importNode(todoTemplateHTML.content, true);
+  const itemLine = todoTemplate.querySelector("li");
+  const check = todoTemplate.querySelector("input");
+  const descP = todoTemplate.querySelector("p:first-of-type");
+  const dateP = todoTemplate.querySelector("p:last-of-type");
+  const editBtn = todoTemplate.querySelector("button:first-of-type");
+  const deleteBtn = todoTemplate.querySelector("button:last-of-type");
+
+  descP.textContent = `${item.description}`;
+  dateP.textContent = `${item.dueDate}`;
+  editBtn.dataset.todoIndex = `${todoIndex}`;
+  deleteBtn.dataset.todoIndex = `${todoIndex}`;
 
   if (item.isComplete === true) {
     check.checked = true;
     descP.classList.add("check");
     dateP.classList.add("check");
   }
-
-  //rework logics - addclasslist if isComplete = true
   check.addEventListener("change", () => {
     if (check.checked) {
       descP.classList.add("check");
@@ -72,17 +38,12 @@ const renderTodo = (item, todoIndex, projectIndex) => {
       descP.classList.remove("check");
       dateP.classList.remove("check");
       item.isComplete = false;
-      if (showComplete === true) {
-        renderComplete();
-        showComplete = false;
-      }
     }
   });
 
   editBtn.dataset.projectIndex = projectIndex;
   editBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    console.log("yap");
     inputTodo(e);
   });
 
@@ -93,127 +54,95 @@ const renderTodo = (item, todoIndex, projectIndex) => {
       e.target.dataset.todoIndex
     );
     clearTodos();
-    //where are you on a page?
     renderInbox();
   });
 
-  itemLine.appendChild(check);
-  itemLine.appendChild(descP);
-  itemLine.appendChild(dateP);
-  itemLine.appendChild(editBtn);
-  itemLine.appendChild(deleteBtn);
   todos.appendChild(itemLine);
 };
 
+//RENDER AND SAVE FUNCTION that takes argument where it is now and saves to local storage
+
 const renderAddTodoButton = (projectIndex) => {
-  const addTodo = createHtmlElement(
+  const addTodo = document.createElement("button");
+  addTodo.textContent = "+Add task";
+  addTodo.dataset.projectIndex = projectIndex;
+  /* const addTodo = createHtmlElement(
     "button",
     null,
     "+Add task",
     null,
     //here null turned into a template string
     `${projectIndex}`
-  );
+  ); */
   addTodo.addEventListener("click", (e) => inputTodo(e));
   todos.appendChild(addTodo);
 };
 
+// Make global values and create 3 separate functions
 const inputTodo = (e) => {
-  console.log(todos.lastChild);
   todos.removeChild(todos.lastChild);
-  const todoInputForm = createHtmlElement("form", null, null);
-  const inputDescription = createHtmlElement("input", null, null, "text");
-  const inputDuedate = createHtmlElement("input", null, null, "text");
-  const select = createHtmlElement("select", null, null);
-  const submitBtn = createHtmlElement("button", null, "Add", "submit");
-  const cancelBtn = createHtmlElement("button", null, "Cancel", "reset");
+  const addTodoTemplate = document.importNode(
+    addTodoTemplateHTML.content,
+    true
+  );
+  const todoInputForm = addTodoTemplate.querySelector("form");
+  const inputDescription = addTodoTemplate.querySelector("input[type=text]");
+  const inputDuedate = addTodoTemplate.querySelector("input[type=date]");
+  const select = addTodoTemplate.querySelector("select");
+  const cancelBtn = addTodoTemplate.querySelector("button[type=reset]");
 
-  inputDescription.required = true;
-  inputDescription.setAttribute("placeholder", "Task description");
-  select.setAttribute("name", "projects");
-
-  //how to optimize? extract and render all again?
   cancelBtn.addEventListener("click", () => {
     todos.removeChild(todos.lastChild);
     renderAddTodoButton(e.target.dataset.projectIndex);
   });
-
+  // EDIT TODO
   if (e.target.dataset.todoIndex) {
-    console.log(e.target.dataset.todoIndex);
-    console.log(e.target.dataset.projectIndex);
     const currentProjectIndex = e.target.dataset.projectIndex;
     const currentTodo =
-      todoApp.projects[e.target.dataset.projectIndex].todoList[
+      todoApp.projects[currentProjectIndex].todoList[
         e.target.dataset.todoIndex
       ];
-    console.log(currentTodo);
-
     inputDescription.value = currentTodo.description;
     inputDuedate.value = currentTodo.dueDate;
     todoInputForm.addEventListener("submit", (e) => {
       e.preventDefault();
       currentTodo.editTodo(inputDescription.value, inputDuedate.value);
-      console.log(todoApp);
-      //where are we on the page?
       renderProjectTodos(currentProjectIndex);
     });
-
-    todoInputForm.appendChild(inputDescription);
-    todoInputForm.appendChild(inputDuedate);
-    todoInputForm.appendChild(submitBtn);
-    todoInputForm.appendChild(cancelBtn);
+    select.style.display = "none";
     todos.appendChild(todoInputForm);
     return;
   }
-
-  //abstract away these functions
+  // ADD TODO OUTSIDE ANY PROJECT
   if (e.target.dataset.projectIndex == "null") {
     todoApp.projects.forEach((project) => {
-      const projectOption = createHtmlElement(
-        "option",
-        null,
-        `${project.description}`
-      );
-      projectOption.setAttribute("value", `${project.description}`);
+      const projectOption = document.createElement("option");
+      projectOption.textContent = `${project.description}`;
+      projectOption.value = `${project.description}`;
       select.appendChild(projectOption);
     });
-    console.log("YYYEP");
 
     todoInputForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      console.log(todoApp);
       const currentProjectIndex = todoApp.projects.findIndex(
         (project) => project.description === `${select.value}`
       );
-
       const todoItem = new TodoItem(inputDescription.value, inputDuedate.value);
       todoApp.projects[currentProjectIndex].addTodo(todoItem);
-      console.log(todoApp);
       renderProjectTodos(currentProjectIndex);
     });
-
-    todoInputForm.appendChild(inputDescription);
-    todoInputForm.appendChild(inputDuedate);
-    todoInputForm.appendChild(select);
-    todoInputForm.appendChild(submitBtn);
-    todoInputForm.appendChild(cancelBtn);
     todos.appendChild(todoInputForm);
-  } else {
+  }
+  // ADD TODO WITHIN SPECIFIC PROJECT
+  else {
     const currentProjectIndex = e.target.dataset.projectIndex;
-
-    console.log("test");
     todoInputForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const todoItem = new TodoItem(inputDescription.value, inputDuedate.value);
       todoApp.projects[currentProjectIndex].addTodo(todoItem);
-      console.log(todoApp);
       renderProjectTodos(currentProjectIndex);
     });
-
-    todoInputForm.appendChild(inputDescription);
-    todoInputForm.appendChild(inputDuedate);
-    todoInputForm.appendChild(submitBtn);
-    todoInputForm.appendChild(cancelBtn);
+    select.style.display = "none";
     todos.appendChild(todoInputForm);
   }
 };
@@ -223,20 +152,16 @@ const clearTodos = () => {
 };
 
 const addProject = () => {
-  console.log("ok");
-  const projectInputForm = createHtmlElement("form", null, null);
-  const projectDescription = createHtmlElement("input", null, null, "text");
-  const submitBtn = createHtmlElement("button", null, "Add", "submit");
-  const cancelBtn = createHtmlElement("button", null, "Cancel", "reset");
+  const addProjectTemplate = document.importNode(
+    addProjectTemplateHTML.content,
+    true
+  );
+  const addProjectForm = addProjectTemplate.querySelector("form");
+  const projectDescription = addProjectTemplate.querySelector("input");
+  const cancelBtn = addProjectTemplate.querySelector('button[type="reset"]');
+  projects.appendChild(addProjectForm);
 
-  projectDescription.required = true;
-
-  projectInputForm.appendChild(projectDescription);
-  projectInputForm.appendChild(submitBtn);
-  projectInputForm.appendChild(cancelBtn);
-  projects.appendChild(projectInputForm);
-
-  projectInputForm.addEventListener("submit", (e) => {
+  addProjectForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const newProject = new Project(projectDescription.value);
     todoApp.addProject(newProject);
@@ -244,32 +169,28 @@ const addProject = () => {
     clearProjects();
     renderProjects();
   });
+
+  cancelBtn.addEventListener("click", () => {
+    projects.removeChild(projects.lastChild);
+  });
 };
 
 export const renderProjects = () => {
   todoApp.projects.forEach((project, projectIndex) => {
-    const projectLine = createHtmlElement("li", null, null);
-    const icon = createHtmlElement("span", "material-symbols-outlined", "list");
-    const projectName = createHtmlElement("p", null, `${project.description}`);
-    const deleteBtn = createHtmlElement(
-      "button",
-      "material-symbols-outlined",
-      "delete",
-      null,
-      `${projectIndex}`
+    const projectTemplate = document.importNode(
+      projectTemplateHTML.content,
+      true
     );
-    projectLine.appendChild(icon);
-    projectLine.appendChild(projectName);
-    projectLine.appendChild(deleteBtn);
+    const projectLine = projectTemplate.querySelector("li");
+    const projectName = projectTemplate.querySelector("p");
+    const deleteBtn = projectTemplate.querySelector("button");
     projectLine.addEventListener("click", () => {
       renderProjectTodos(projectIndex);
     });
+    projectName.textContent = `${project.description}`;
     deleteBtn.addEventListener("click", (e) => {
       removeProject(e);
-      clearTodos();
-      renderInbox();
     });
-
     projects.appendChild(projectLine);
   });
 };
@@ -284,12 +205,12 @@ const renderProjectTodos = (projectIndex) => {
 
 const removeProject = (e) => {
   e.stopPropagation();
-  console.log("yes");
   const toDelete = e.target.dataset.projectIndex;
   todoApp.removeProject(toDelete);
   clearProjects();
   renderProjects();
-  console.log(todoApp);
+  clearTodos();
+  renderInbox();
 };
 
 const clearProjects = () => {
@@ -310,10 +231,11 @@ const renderComplete = () => {
     const completedTodos = project.todoList.filter(
       (todo) => todo.isComplete === true
     );
-    showComplete = true;
     console.log(completedTodos);
     completedTodos.forEach((item, todoindex) => {
       renderTodo(item, todoindex, projectIndex);
+      //to stop rendering checkbox
+      const check = document.querySelector("input[type=checkbox]");
     });
   });
 };
