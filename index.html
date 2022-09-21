@@ -58,8 +58,10 @@
       <template id="add-project-template">
         <form>
           <input type="text" name="" id="" required />
-          <button type="submit">Add</button>
-          <button type="reset">Cancel</button>
+          <div class="input-buttons">
+            <button type="submit">Add</button>
+            <button type="reset">Cancel</button>
+          </div>
         </form>
       </template>
     </aside>
@@ -77,17 +79,21 @@
       </ul>
       <template id="add-todo-template">
         <form>
-          <input
-            type="text"
-            name=""
-            id=""
-            required
-            placeholder="Task description"
-          />
-          <input type="date" name="" id=""/>
-          <select name="projects" id=""></select>
-          <button type="submit">Add</button>
-          <button type="reset">Cancel</button>
+          <div id="input">
+            <input
+              type="text"
+              name=""
+              id=""
+              required
+              placeholder="Task description"
+            />
+            <input type="date" name="" id=""/>
+            <select name="projects" id=""></select>
+          </div>
+          <div class="input-buttons">
+            <button type="submit">Add</button>
+            <button type="reset">Cancel</button>
+          </div>
         </form>
       </template>
     </div>
