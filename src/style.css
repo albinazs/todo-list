@@ -1,5 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
 
+
+:root {
+  --light-grey-color: #fafafa;
+  --dark-grey-color: rgb(181, 185, 181);
+  --orange-color: #ff9000;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -68,7 +75,7 @@ aside button:hover {
 }
 
 .projects button:hover {
-  color: #ff9000;
+  color: var(--orange-color);
   background-color: inherit;
 }
 
@@ -96,13 +103,15 @@ aside p {
   padding: 0;
   width: auto;
   margin-left: auto;
-  color: rgb(181, 185, 181);
+  color: var(--dark-grey-color);
 }
 
-/*
-to fix bold font
-to ADD transition!
-*/
+aside form input[type=text] {
+  width: 100%;
+  border: 1px solid var(--dark-grey-color);
+  border-radius: 5px;
+  padding: 5px;
+}
 
 .main {
   background-color: #ffffff;
@@ -141,3 +150,59 @@ to ADD transition!
 .check {
   text-decoration: line-through;
 }
+
+.main form {
+  width: 100%;
+}
+
+.main form #input {
+  border: 1px solid var(--dark-grey-color);
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.main form input[type=text] {
+  width: 100%;
+  border: none;
+  padding: 10px 0px;
+}
+
+.main form input[type=date],
+.main form input[type=select] {
+  border: 1px solid var(--dark-grey-color);
+}
+
+input:focus{
+  outline: none;
+}
+
+.main form .input-buttons,
+aside form .input-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.main form button,
+aside form button {
+  text-align: center;
+  width: auto;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.main form button:first-of-type,
+aside form button:first-of-type {
+  color: white;
+  background-color: var(--orange-color);
+}
+
+.main form button:last-of-type,
+aside form button:last-of-type {
+  background-color: var(--light-grey-color);
+}
+
+@media (max-width: 960px) 
+  .toggle-sidebar {
+    display: inline-block !important;
+  }

@@ -70,15 +70,13 @@ renderProjects();
 /* 
 TODO
 
--- templates to clean code in DOM
--- where are we on the page
+-- where are we on the page + highlight that with bold font
 -- local storage
 
-3.1 uncomplete todos and render accordingly
-4. work with dates and today/week buttons - filter array tictactoe
+-- work with dates and today/week buttons - filter array tictactoe
 +sort for listing (urgents on the top)
-4.1. no projects with the same name - error
-6. css: burger for mobile, maybe transition?
-7. add localstorage
+-- no projects with the same name - error
+-- css: burger for mobile, maybe transition?
+-- delete all completed
 
  */

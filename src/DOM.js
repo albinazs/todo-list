@@ -10,6 +10,17 @@ const todoTemplateHTML = document.querySelector("#todo-template");
 const addProjectTemplateHTML = document.querySelector("#add-project-template");
 const addTodoTemplateHTML = document.querySelector("#add-todo-template");
 
+const LOCAL_STORAGE_PROJECTS_KEY = "todoApp.projects";
+
+let savedTodoApp = () => 
+  JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECTS_KEY)) || [];
+
+  const save = () =>
+  localStorage.setItem(
+    LOCAL_STORAGE_PROJECTS_KEY,
+    JSON.stringify(todoApp.projects)
+  );
+
 const renderTodo = (item, todoIndex, projectIndex) => {
   const todoTemplate = document.importNode(todoTemplateHTML.content, true);
   const itemLine = todoTemplate.querySelector("li");
@@ -18,7 +29,6 @@ const renderTodo = (item, todoIndex, projectIndex) => {
   const dateP = todoTemplate.querySelector("p:last-of-type");
   const editBtn = todoTemplate.querySelector("button:first-of-type");
   const deleteBtn = todoTemplate.querySelector("button:last-of-type");
-
   descP.textContent = `${item.description}`;
   dateP.textContent = `${item.dueDate}`;
   editBtn.dataset.todoIndex = `${todoIndex}`;
@@ -65,7 +75,7 @@ const removeTodo = (projectIndex, todoIndex) => {
 //RENDER AND SAVE FUNCTION that takes argument where it is now and saves to local storage
 const renderAddTodoButton = (projectIndex) => {
   const addTodo = document.createElement("button");
-  addTodo.textContent = "+Add task";
+  addTodo.textContent = "+ Add task";
   addTodo.addEventListener("click", () => inputTodo(projectIndex));
   todos.appendChild(addTodo);
 };
@@ -154,6 +164,8 @@ const addProject = () => {
     e.preventDefault();
     const newProject = new Project(projectDescription.value);
     todoApp.addProject(newProject);
+    save();
+    console.log(savedTodoApp);
     clearProjects();
     renderProjects();
   });
@@ -172,10 +184,12 @@ export const renderProjects = () => {
     const projectLine = projectTemplate.querySelector("li");
     const projectName = projectTemplate.querySelector("p");
     const deleteBtn = projectTemplate.querySelector("button");
+    projectName.textContent = `${project.description}`;
+
     projectLine.addEventListener("click", () => {
       renderProjectTodos(projectIndex);
     });
-    projectName.textContent = `${project.description}`;
+
     deleteBtn.addEventListener("click", (e) => {
       removeProject(e);
     });
@@ -214,18 +228,36 @@ export const renderInbox = () => {
   renderAddTodoButton(null);
 };
 
-const renderComplete = () => {
+const renderCompleted = () => {
   todoApp.projects.forEach((project, projectIndex) => {
     const completedTodos = project.todoList.filter(
       (todo) => todo.isComplete === true
     );
     completedTodos.forEach((item, todoindex) => {
       renderTodo(item, todoindex, projectIndex);
-      //to stop rendering checkbox
-      const check = document.querySelector("input[type=checkbox]");
+      const check = todos.querySelectorAll("input[type=checkbox]");
+      const edit = todos.querySelectorAll("button:first-of-type");
+      check.forEach((item) => (item.style.display = "none"));
+      edit.forEach((item) => (item.style.display = "none"));
     });
   });
+  if (todos.firstChild) {
+    const deleteAll = document.createElement("button");
+    deleteAll.textContent = "Delete all";
+    deleteAll.addEventListener("click", () => deleteCompleted());
+    todos.appendChild(deleteAll);
+  }
 };
+
+const deleteCompleted = () => {
+  //TODO
+};
+
+/* const removeTodo = (projectIndex, todoIndex) => {
+  todoApp.projects[projectIndex].removeTodo(todoIndex);
+  clearTodos();
+  renderInbox();
+}; */
 
 inboxBtn.addEventListener("click", () => {
   clearTodos();
@@ -234,7 +266,7 @@ inboxBtn.addEventListener("click", () => {
 
 completeBtn.addEventListener("click", () => {
   clearTodos();
-  renderComplete();
+  renderCompleted();
 });
 
 addProjectBtn.addEventListener("click", () => addProject());
