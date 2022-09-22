@@ -4,7 +4,7 @@ const todos = document.querySelector(".todos");
 const projects = document.querySelector(".projectlist");
 const inboxBtn = document.querySelector("#inbox");
 const completeBtn = document.querySelector("#complete");
-const addProjectBtn = document.querySelector(".addproject");
+const addButtonTemplateHTML = document.querySelector("#add-button-template");
 const projectTemplateHTML = document.querySelector("#project-template");
 const todoTemplateHTML = document.querySelector("#todo-template");
 const addProjectTemplateHTML = document.querySelector("#add-project-template");
@@ -12,10 +12,10 @@ const addTodoTemplateHTML = document.querySelector("#add-todo-template");
 
 const LOCAL_STORAGE_PROJECTS_KEY = "todoApp.projects";
 
-let savedTodoApp = () => 
+let savedTodoApp = () =>
   JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECTS_KEY)) || [];
 
-  const save = () =>
+const save = () =>
   localStorage.setItem(
     LOCAL_STORAGE_PROJECTS_KEY,
     JSON.stringify(todoApp.projects)
@@ -74,10 +74,15 @@ const removeTodo = (projectIndex, todoIndex) => {
 
 //RENDER AND SAVE FUNCTION that takes argument where it is now and saves to local storage
 const renderAddTodoButton = (projectIndex) => {
-  const addTodo = document.createElement("button");
-  addTodo.textContent = "+ Add task";
-  addTodo.addEventListener("click", () => inputTodo(projectIndex));
-  todos.appendChild(addTodo);
+  const addButtonTemplate = document.importNode(
+    addButtonTemplateHTML.content,
+    true
+  );
+  const addButton = addButtonTemplate.querySelector("li");
+  const buttonName = addButtonTemplate.querySelector("p");
+  buttonName.textContent = "Add task";
+  addButton.addEventListener("click", () => inputTodo(projectIndex));
+  todos.appendChild(addButton);
 };
 
 // Make global values and create 3 separate functions
@@ -151,6 +156,7 @@ const clearTodos = () => {
 };
 
 const addProject = () => {
+  projects.removeChild(projects.lastChild);
   const addProjectTemplate = document.importNode(
     addProjectTemplateHTML.content,
     true
@@ -172,6 +178,7 @@ const addProject = () => {
 
   cancelBtn.addEventListener("click", () => {
     projects.removeChild(projects.lastChild);
+    renderAddProjectButton();
   });
 };
 
@@ -195,6 +202,19 @@ export const renderProjects = () => {
     });
     projects.appendChild(projectLine);
   });
+  renderAddProjectButton();
+};
+
+const renderAddProjectButton = () => {
+  const addButtonTemplate = document.importNode(
+    addButtonTemplateHTML.content,
+    true
+  );
+  const addButton = addButtonTemplate.querySelector("li");
+  const buttonName = addButtonTemplate.querySelector("p");
+  buttonName.textContent = "Add project";
+  addButton.addEventListener("click", () => addProject());
+  projects.appendChild(addButton);
 };
 
 const renderProjectTodos = (projectIndex) => {
@@ -268,5 +288,3 @@ completeBtn.addEventListener("click", () => {
   clearTodos();
   renderCompleted();
 });
-
-addProjectBtn.addEventListener("click", () => addProject());

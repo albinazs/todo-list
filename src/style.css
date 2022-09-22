@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
 
-
 :root {
   --light-grey-color: #fafafa;
   --dark-grey-color: rgb(181, 185, 181);
@@ -63,25 +62,13 @@ aside button:hover {
   background-color: #f0eded;
 }
 
-.projects {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.projects button {
-  font-size: 2rem;
-  width: auto;
-}
-
-.projects button:hover {
-  color: var(--orange-color);
-  background-color: inherit;
-}
-
 aside p {
   font-size: 1.3rem;
   font-weight: 900;
+}
+
+.projects-div {
+  margin: 10px 0px;
 }
 
 .projectlist li {
@@ -106,11 +93,20 @@ aside p {
   color: var(--dark-grey-color);
 }
 
-aside form input[type=text] {
+aside form input[type="text"] {
   width: 100%;
   border: 1px solid var(--dark-grey-color);
   border-radius: 5px;
   padding: 5px;
+}
+
+.orange {
+  color: orange;
+}
+
+aside li.add:hover {
+  background-color: var(--light-grey-color);
+  color: var(--orange-color);
 }
 
 .main {
@@ -151,6 +147,11 @@ aside form input[type=text] {
   text-decoration: line-through;
 }
 
+.main li.add:hover {
+  background-color: #ffffff;
+  color: var(--orange-color);
+}
+
 .main form {
   width: 100%;
 }
@@ -161,18 +162,18 @@ aside form input[type=text] {
   padding: 5px;
 }
 
-.main form input[type=text] {
+.main form input[type="text"] {
   width: 100%;
   border: none;
   padding: 10px 0px;
 }
 
-.main form input[type=date],
-.main form input[type=select] {
+.main form input[type="date"],
+.main form input[type="select"] {
   border: 1px solid var(--dark-grey-color);
 }
 
-input:focus{
+input:focus {
   outline: none;
 }
 
@@ -202,7 +203,6 @@ aside form button:last-of-type {
   background-color: var(--light-grey-color);
 }
 
-@media (max-width: 960px) 
-  .toggle-sidebar {
-    display: inline-block !important;
-  }
+@media (max-width: 960px) .toggle-sidebar {
+  display: inline-block !important;
+}
