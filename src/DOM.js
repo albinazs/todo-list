@@ -1,4 +1,5 @@
 import { todoApp, Project, TodoItem } from ".";
+import { Storage } from "./storage";
 
 const todos = document.querySelector(".todos");
 const projects = document.querySelector(".projectlist");
@@ -9,17 +10,6 @@ const projectTemplateHTML = document.querySelector("#project-template");
 const todoTemplateHTML = document.querySelector("#todo-template");
 const addProjectTemplateHTML = document.querySelector("#add-project-template");
 const addTodoTemplateHTML = document.querySelector("#add-todo-template");
-
-const LOCAL_STORAGE_PROJECTS_KEY = "todoApp.projects";
-
-let savedTodoApp = () =>
-  JSON.parse(localStorage.getItem(LOCAL_STORAGE_PROJECTS_KEY)) || [];
-
-const save = () =>
-  localStorage.setItem(
-    LOCAL_STORAGE_PROJECTS_KEY,
-    JSON.stringify(todoApp.projects)
-  );
 
 const renderTodo = (item, todoIndex, projectIndex) => {
   const todoTemplate = document.importNode(todoTemplateHTML.content, true);
@@ -67,7 +57,7 @@ const renderTodo = (item, todoIndex, projectIndex) => {
 };
 
 const removeTodo = (projectIndex, todoIndex) => {
-  todoApp.projects[projectIndex].removeTodo(todoIndex);
+  Storage.removeTodo(projectIndex, todoIndex);
   clearTodos();
   renderInbox();
 };
@@ -110,7 +100,12 @@ const inputTodo = (projectIndex, todoIndex) => {
     inputDuedate.value = currentTodo.dueDate;
     todoInputForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      currentTodo.editTodo(inputDescription.value, inputDuedate.value);
+      Storage.editTodo(
+        projectIndex,
+        todoIndex,
+        inputDescription.value,
+        inputDuedate.value
+      );
       renderProjectTodos(projectIndex);
     });
     select.style.display = "none";
@@ -133,7 +128,7 @@ const inputTodo = (projectIndex, todoIndex) => {
         (project) => project.description === `${select.value}`
       );
       const todoItem = new TodoItem(inputDescription.value, inputDuedate.value);
-      todoApp.projects[projectIndex].addTodo(todoItem);
+      Storage.addTodo(projectIndex, todoItem);
       renderProjectTodos(projectIndex);
     });
     todos.appendChild(todoInputForm);
@@ -143,7 +138,7 @@ const inputTodo = (projectIndex, todoIndex) => {
     todoInputForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const todoItem = new TodoItem(inputDescription.value, inputDuedate.value);
-      todoApp.projects[projectIndex].addTodo(todoItem);
+      Storage.addTodo(projectIndex, todoItem);
       renderProjectTodos(projectIndex);
     });
     select.style.display = "none";
@@ -169,9 +164,7 @@ const addProject = () => {
   addProjectForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const newProject = new Project(projectDescription.value);
-    todoApp.addProject(newProject);
-    save();
-    console.log(savedTodoApp);
+    Storage.addProject(newProject);
     clearProjects();
     renderProjects();
   });
@@ -183,25 +176,29 @@ const addProject = () => {
 };
 
 export const renderProjects = () => {
-  todoApp.projects.forEach((project, projectIndex) => {
-    const projectTemplate = document.importNode(
-      projectTemplateHTML.content,
-      true
-    );
-    const projectLine = projectTemplate.querySelector("li");
-    const projectName = projectTemplate.querySelector("p");
-    const deleteBtn = projectTemplate.querySelector("button");
-    projectName.textContent = `${project.description}`;
+  Storage.getTodoApp()
+    .getProjects()
+    .forEach((project, projectIndex) => {
+      const projectTemplate = document.importNode(
+        projectTemplateHTML.content,
+        true
+      );
+      const projectLine = projectTemplate.querySelector("li");
+      const projectName = projectTemplate.querySelector("p");
+      const deleteBtn = projectTemplate.querySelector("button");
+      deleteBtn.dataset.projectIndex = projectIndex;
+      projectName.textContent = `${project.description}`;
 
-    projectLine.addEventListener("click", () => {
-      renderProjectTodos(projectIndex);
-    });
+      projectLine.addEventListener("click", () => {
+        renderProjectTodos(projectIndex);
+      });
 
-    deleteBtn.addEventListener("click", (e) => {
-      removeProject(e);
+      deleteBtn.addEventListener("click", (e) => {
+        removeProject(e);
+      });
+      projects.appendChild(projectLine);
+      console.log(projectIndex);
     });
-    projects.appendChild(projectLine);
-  });
   renderAddProjectButton();
 };
 
@@ -219,16 +216,19 @@ const renderAddProjectButton = () => {
 
 const renderProjectTodos = (projectIndex) => {
   clearTodos();
-  todoApp.projects[projectIndex].todoList.forEach((item, todoIndex) => {
-    renderTodo(item, todoIndex, projectIndex);
-  });
+  Storage.getTodoApp()
+    .getProjects()
+    [projectIndex].getTodos()
+    .forEach((item, todoIndex) => {
+      renderTodo(item, todoIndex, projectIndex);
+    });
   renderAddTodoButton(projectIndex);
 };
 
 const removeProject = (e) => {
   e.stopPropagation();
   const toDelete = e.target.dataset.projectIndex;
-  todoApp.removeProject(toDelete);
+  Storage.removeProject(toDelete);
   clearProjects();
   renderProjects();
   clearTodos();

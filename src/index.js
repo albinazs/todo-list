@@ -1,6 +1,7 @@
 import "./style.css";
 import { format } from "date-fns";
 import { renderInbox, renderProjects } from "./DOM";
+import { Storage } from "./storage";
 
 export class TodoItem {
   constructor(description, dueDate) {
@@ -29,6 +30,14 @@ export class Project {
     this.description = newDescription;
   }
 
+  setTodos(todos) {
+    this.todoList = todos;
+  }
+
+  getTodos() {
+    return this.todoList;
+  }
+
   addTodo(todoItem) {
     this.todoList.push(todoItem);
   }
@@ -38,8 +47,16 @@ export class Project {
   }
 }
 
-export const todoApp = {
+export let todoApp = {
   projects: [],
+
+  setProjects(projects) {
+    this.projects = projects;
+  },
+
+  getProjects() {
+    return this.projects;
+  },
 
   addProject(project) {
     this.projects.push(project);
@@ -50,6 +67,9 @@ export const todoApp = {
   },
 };
 
+//function loadHomePage
+
+/* 
 const demoProject = new Project("Demo project");
 const demoProject2 = new Project("Demo project2");
 
@@ -61,8 +81,13 @@ demoProject.addTodo(toClean);
 demoProject2.addTodo(toClean2);
 demoProject2.addTodo(toRun);
 
-todoApp.addProject(demoProject);
-todoApp.addProject(demoProject2);
+Storage.addProject(demoProject);
+Storage.addProject(demoProject2); */
+
+todoApp = Storage.getTodoApp() || Object.create(todoApp);
+const TodoApp = Storage.getTodoApp();
+console.log(TodoApp);
+console.log(todoApp);
 
 renderInbox();
 renderProjects();
@@ -70,13 +95,17 @@ renderProjects();
 /* 
 TODO
 
--- where are we on the page + highlight that with bold font
--- local storage
-
+-- render todolist function with name of where we are now
+and button to add below
+pass here location/index
+where are we on the page + highlight that with bold font
 -- work with dates and today/week buttons - filter array tictactoe
 +sort for listing (urgents on the top)
+-- remove complete logics - maybe add per project/
+
+-- local storage
 -- no projects with the same name - error
 -- css: burger for mobile, maybe transition?
--- delete all completed
+
 
  */
