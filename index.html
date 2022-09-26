@@ -17,30 +17,31 @@
   </head>
   <body>
     <header>
+      <span class="material-symbols-outlined toggle-sidebar">menu</span>
       <h1>TODO app</h1>
     </header>
     <aside>
-      <ul>
-        <li>
-          <button id="inbox">
+      <ul class="nav">
+        <li> 
+          <button id="inbox" data-index="inbox">
             <span class="material-symbols-outlined">inbox</span>Inbox
           </button>
         </li>
         <li>
-          <button id="today">
+          <button id="today" data-index="today">
             <span class="material-symbols-outlined">today</span>Today
           </button>
         </li>
         <li>
-          <button id="week">
+          <button id="week" data-index="week">
             <span class="material-symbols-outlined">date_range</span>Next 7 days
           </button>
         </li>
-        <li>
-          <button id="complete">
+        <!-- <li>
+          <button id="complete" data-index="complete">
             <span class="material-symbols-outlined">task_alt</span>Completed
           </button>
-        </li>
+        </li> -->
       </ul>
       <div class="projects-div">
         <p>Projects</p>
