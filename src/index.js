@@ -26,6 +26,10 @@ export class Project {
     this.todoList = [];
   }
 
+  getDescription() {
+    return this.description;
+  }
+
   editProject(newDescription) {
     this.description = newDescription;
   }
@@ -58,6 +62,18 @@ export let todoApp = {
     return this.projects;
   },
 
+  contains(projectName) {
+    return this.projects.some(
+      (project) => project.getDescription() === projectName
+    );
+  },
+
+  getIndex(projectName) {
+    return this.projects.findIndex(
+      (project) => project.getDescription() === projectName
+    );
+  },
+
   addProject(project) {
     this.projects.push(project);
   },
@@ -85,9 +101,6 @@ Storage.addProject(demoProject);
 Storage.addProject(demoProject2); */
 
 todoApp = Storage.getTodoApp() || Object.create(todoApp);
-const TodoApp = Storage.getTodoApp();
-console.log(TodoApp);
-console.log(todoApp);
 
 renderInbox();
 renderProjects();
@@ -95,17 +108,9 @@ renderProjects();
 /* 
 TODO
 
--- render todolist function with name of where we are now
-and button to add below
-pass here location/index
-where are we on the page + highlight that with bold font
 -- work with dates and today/week buttons - filter array tictactoe
 +sort for listing (urgents on the top)
--- remove complete logics - maybe add per project/
 
--- local storage
--- no projects with the same name - error
--- css: burger for mobile, maybe transition?
-
+-- complete logics?
 
  */

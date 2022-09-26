@@ -36,6 +36,13 @@ header {
   color: white;
 }
 
+.toggle-sidebar {
+  font-size: 2.5rem;
+  margin-right: 10px;
+  cursor: pointer;
+  display: none;
+}
+
 aside {
   background-color: #fafafa;
   padding: 2rem;
@@ -86,6 +93,10 @@ aside p {
   background-color: #f0eded;
 }
 
+.active {
+  background-color: #f0eded;
+}
+
 .projectlist li button {
   padding: 0;
   width: auto;
@@ -112,6 +123,11 @@ aside li.add:hover {
 .main {
   background-color: #ffffff;
   padding: 2rem;
+}
+
+.main h4 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
 }
 
 .main li {
@@ -203,6 +219,17 @@ aside form button:last-of-type {
   background-color: var(--light-grey-color);
 }
 
-@media (max-width: 960px) .toggle-sidebar {
-  display: inline-block !important;
+.aside-hide {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .toggle-sidebar {
+    display: block !important;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+  }
 }

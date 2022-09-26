@@ -3,13 +3,18 @@ import { Storage } from "./storage";
 
 const todos = document.querySelector(".todos");
 const projects = document.querySelector(".projectlist");
-const inboxBtn = document.querySelector("#inbox");
-const completeBtn = document.querySelector("#complete");
+const aside = document.querySelector("aside");
+const toggleSidebar = document.querySelector(".toggle-sidebar");
+const nav = document.querySelector(".nav");
+const navLine = nav.querySelectorAll("button");
+const inboxBtn = document.querySelector("[data-index='inbox']");
+//const completeBtn = document.querySelector("#complete");
 const addButtonTemplateHTML = document.querySelector("#add-button-template");
 const projectTemplateHTML = document.querySelector("#project-template");
 const todoTemplateHTML = document.querySelector("#todo-template");
 const addProjectTemplateHTML = document.querySelector("#add-project-template");
 const addTodoTemplateHTML = document.querySelector("#add-todo-template");
+let selectedIndex;
 
 const renderTodo = (item, todoIndex, projectIndex) => {
   const todoTemplate = document.importNode(todoTemplateHTML.content, true);
@@ -59,10 +64,9 @@ const renderTodo = (item, todoIndex, projectIndex) => {
 const removeTodo = (projectIndex, todoIndex) => {
   Storage.removeTodo(projectIndex, todoIndex);
   clearTodos();
-  renderInbox();
+  renderProjectTodos(projectIndex);
 };
 
-//RENDER AND SAVE FUNCTION that takes argument where it is now and saves to local storage
 const renderAddTodoButton = (projectIndex) => {
   const addButtonTemplate = document.importNode(
     addButtonTemplateHTML.content,
@@ -163,10 +167,19 @@ const addProject = () => {
 
   addProjectForm.addEventListener("submit", (e) => {
     e.preventDefault();
+    if (Storage.getTodoApp().contains(projectDescription.value)) {
+      projectDescription.value = "";
+      alert("Project names must be different");
+      return;
+    }
     const newProject = new Project(projectDescription.value);
     Storage.addProject(newProject);
+    const projectIndex = Storage.getTodoApp().getIndex(
+      projectDescription.value
+    );
     clearProjects();
     renderProjects();
+    renderProjectTodos(projectIndex);
   });
 
   cancelBtn.addEventListener("click", () => {
@@ -174,6 +187,35 @@ const addProject = () => {
     renderAddProjectButton();
   });
 };
+
+nav.addEventListener("click", (e) => {
+  navLine.forEach((line) => line.classList.remove("active"));
+  if (e.target.dataset.index === "inbox") {
+    document.querySelector("#inbox").classList.add("active");
+  } else if (e.target.dataset.index === "today") {
+    document.querySelector("#today").classList.add("active");
+  } else if (e.target.dataset.index === "week") {
+    document.querySelector("#week").classList.add("active");
+  } else if (e.target.dataset.index === "complete") {
+    document.querySelector("#complete").classList.add("active");
+  }
+  selectedIndex = null;
+  clearProjects();
+  renderProjects();
+});
+
+projects.addEventListener("click", (e) => {
+  navLine.forEach((line) => line.classList.remove("active"));
+  if (e.target.dataset.index) {
+    selectedIndex = e.target.dataset.index;
+    clearProjects();
+    renderProjects();
+  } else if (e.target.closest("[data-index]")) {
+    selectedIndex = e.target.parentElement.getAttribute("data-index");
+    clearProjects();
+    renderProjects();
+  }
+});
 
 export const renderProjects = () => {
   Storage.getTodoApp()
@@ -186,8 +228,14 @@ export const renderProjects = () => {
       const projectLine = projectTemplate.querySelector("li");
       const projectName = projectTemplate.querySelector("p");
       const deleteBtn = projectTemplate.querySelector("button");
+      projectLine.dataset.index = projectIndex;
+
       deleteBtn.dataset.projectIndex = projectIndex;
       projectName.textContent = `${project.description}`;
+
+      if (projectIndex == selectedIndex) {
+        projectLine.classList.add("active");
+      }
 
       projectLine.addEventListener("click", () => {
         renderProjectTodos(projectIndex);
@@ -197,7 +245,6 @@ export const renderProjects = () => {
         removeProject(e);
       });
       projects.appendChild(projectLine);
-      console.log(projectIndex);
     });
   renderAddProjectButton();
 };
@@ -216,6 +263,10 @@ const renderAddProjectButton = () => {
 
 const renderProjectTodos = (projectIndex) => {
   clearTodos();
+  const projectName = Storage.getTodoApp()
+    .getProjects()
+    [projectIndex].getDescription();
+  renderHeader(projectName);
   Storage.getTodoApp()
     .getProjects()
     [projectIndex].getTodos()
@@ -239,16 +290,48 @@ const clearProjects = () => {
   projects.innerHTML = "";
 };
 
+const renderHeader = (header) => {
+  const headerName = document.createElement("h4");
+  headerName.textContent = header;
+  todos.appendChild(headerName);
+};
+
+const renderWelcome = () => {
+  const headerName = document.createElement("p");
+  headerName.textContent = "Please create your first project";
+  todos.appendChild(headerName);
+};
+
 export const renderInbox = () => {
+  renderHeader("Inbox");
   todoApp.projects.forEach((project, projectIndex) => {
     project.todoList.forEach((item, todoindex) => {
       renderTodo(item, todoindex, projectIndex);
     });
   });
-  renderAddTodoButton(null);
+  if (Storage.getTodoApp().getProjects().length != 0) {
+    renderAddTodoButton(null);
+  } else {
+    renderWelcome();
+  }
 };
 
-const renderCompleted = () => {
+inboxBtn.addEventListener("click", () => {
+  clearTodos();
+  renderInbox();
+});
+
+toggleSidebar.addEventListener("click", () => {
+  aside.classList.toggle('aside-hide');
+});
+
+window.addEventListener('resize', () => {
+  if(window.innerWidth <= 960) {
+    aside.classList.remove('aside-hide');
+  }
+})
+
+/* const renderCompleted = () => {
   todoApp.projects.forEach((project, projectIndex) => {
     const completedTodos = project.todoList.filter(
       (todo) => todo.isComplete === true
@@ -267,24 +350,9 @@ const renderCompleted = () => {
     deleteAll.addEventListener("click", () => deleteCompleted());
     todos.appendChild(deleteAll);
   }
-};
-
-const deleteCompleted = () => {
-  //TODO
-};
-
-/* const removeTodo = (projectIndex, todoIndex) => {
-  todoApp.projects[projectIndex].removeTodo(todoIndex);
-  clearTodos();
-  renderInbox();
 }; */
 
-inboxBtn.addEventListener("click", () => {
-  clearTodos();
-  renderInbox();
-});
-
-completeBtn.addEventListener("click", () => {
+/* completeBtn.addEventListener("click", () => {
   clearTodos();
   renderCompleted();
-});
+}); */
