@@ -104,9 +104,10 @@ const inputTodo = (projectIndex, todoIndex) => {
   if (todoIndex || todoIndex === 0) {
     const currentTodo = todoApp.projects[projectIndex].todoList[todoIndex];
     inputDescription.value = currentTodo.description;
-    inputDuedate.value = currentTodo.dueDate;
+    inputDuedate.value = format(toDate(new Date(currentTodo.getDateFormatted())), "yyyy-MM-dd");
     todoInputForm.addEventListener("submit", (e) => {
       e.preventDefault();
+      console.log(new Date(inputDuedate.value));
       const dueDate = format(new Date(inputDuedate.value), "dd/MM/yyyy");
       Storage.editTodo(
         projectIndex,
