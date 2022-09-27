@@ -104,7 +104,10 @@ const inputTodo = (projectIndex, todoIndex) => {
   if (todoIndex || todoIndex === 0) {
     const currentTodo = todoApp.projects[projectIndex].todoList[todoIndex];
     inputDescription.value = currentTodo.description;
-    inputDuedate.value = format(toDate(new Date(currentTodo.getDateFormatted())), "yyyy-MM-dd");
+    inputDuedate.value = format(
+      toDate(new Date(currentTodo.getDateFormatted())),
+      "yyyy-MM-dd"
+    );
     todoInputForm.addEventListener("submit", (e) => {
       e.preventDefault();
       console.log(new Date(inputDuedate.value));
@@ -115,6 +118,7 @@ const inputTodo = (projectIndex, todoIndex) => {
         inputDescription.value,
         dueDate
       );
+      editDeleteHighlight(projectIndex);
       renderProjectTodos(projectIndex);
     });
     select.style.display = "none";
@@ -139,6 +143,7 @@ const inputTodo = (projectIndex, todoIndex) => {
       const dueDate = format(new Date(inputDuedate.value), "dd/MM/yyyy");
       const todoItem = new TodoItem(inputDescription.value, dueDate);
       Storage.addTodo(projectIndex, todoItem);
+      editDeleteHighlight(projectIndex);
       renderProjectTodos(projectIndex);
     });
     todos.appendChild(todoInputForm);
@@ -150,6 +155,7 @@ const inputTodo = (projectIndex, todoIndex) => {
       const dueDate = format(new Date(inputDuedate.value), "dd/MM/yyyy");
       const todoItem = new TodoItem(inputDescription.value, dueDate);
       Storage.addTodo(projectIndex, todoItem);
+      editDeleteHighlight(projectIndex);
       renderProjectTodos(projectIndex);
     });
     select.style.display = "none";
@@ -196,6 +202,10 @@ const addProject = () => {
 };
 
 nav.addEventListener("click", (e) => {
+  navSelectedHighlight(e);
+});
+
+const navSelectedHighlight = (e) => {
   navLine.forEach((line) => line.classList.remove("active"));
   if (e.target.dataset.index === "inbox") {
     document.querySelector("#inbox").classList.add("active");
@@ -209,9 +219,13 @@ nav.addEventListener("click", (e) => {
   selectedIndex = null;
   clearProjects();
   renderProjects();
-});
+};
 
 projects.addEventListener("click", (e) => {
+  projectsSelectedHighlight(e);
+});
+
+const projectsSelectedHighlight = (e) => {
   navLine.forEach((line) => line.classList.remove("active"));
   if (e.target.dataset.index) {
     selectedIndex = e.target.dataset.index;
@@ -222,7 +236,14 @@ projects.addEventListener("click", (e) => {
     clearProjects();
     renderProjects();
   }
-});
+};
+
+const editDeleteHighlight = (projectIndex) => {
+  navLine.forEach((line) => line.classList.remove("active"));
+  selectedIndex = projectIndex;
+  clearProjects();
+  renderProjects();
+};
 
 export const renderProjects = () => {
   Storage.getTodoApp()
@@ -331,14 +352,16 @@ inboxBtn.addEventListener("click", () => {
 });
 
 toggleSidebar.addEventListener("click", () => {
-  aside.classList.toggle("aside-hide");
+  aside.classList.toggle("aside-show");
 });
 
 window.addEventListener("resize", () => {
   if (window.innerWidth >= 960) {
-    aside.classList.remove("aside-hide");
+    aside.classList.remove("aside-show");
   }
 });
+
+window.onload = () => document.querySelector("#inbox").classList.add("active");
 
 todayBtn.addEventListener("click", () => {
   renderToday();
@@ -354,6 +377,11 @@ const renderToday = () => {
         renderTodo(item, todoindex, projectIndex);
       });
     });
+  if (Storage.getTodoApp().getProjects().length != 0) {
+    renderAddTodoButton(null);
+  } else {
+    renderWelcome();
+  }
 };
 
 weekBtn.addEventListener("click", () => {
@@ -370,7 +398,6 @@ const renderThisWeek = () => {
         renderTodo(item, todoindex, projectIndex);
       });
     });
-
   /* const sorted = weekTodos.sort((todo1, todo2) =>
     compareAsc(
       toDate(new Date(todo1.getDateFormatted())),
@@ -378,6 +405,11 @@ const renderThisWeek = () => {
     )
   );
   console.log(sorted) */
+  if (Storage.getTodoApp().getProjects().length != 0) {
+    renderAddTodoButton(null);
+  } else {
+    renderWelcome();
+  }
 };
 
 /* 

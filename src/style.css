@@ -219,8 +219,8 @@ aside form button:last-of-type {
   background-color: var(--light-grey-color);
 }
 
-.aside-hide {
-  display: none;
+.aside-show {
+  display: block;
 }
 
 @media (max-width: 960px) {
@@ -231,5 +231,9 @@ aside form button:last-of-type {
   body {
     display: flex;
     flex-direction: column;
+  }
+
+  aside {
+    display: none;
   }
 }

@@ -131,7 +131,6 @@ TODO
 -- to finalise complete todos logics
 -- to stay where we are after editing/deleting todos
 
--- if im inbox - highloght it. if i remove from inbox - stay there
 -- reorganise code in logical order (DOM) + 
 maybe leave index for init, 
 and store data structures in separate file
