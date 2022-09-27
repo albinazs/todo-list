@@ -1,3 +1,4 @@
+import { toDate, compareAsc, format } from "date-fns";
 import { todoApp, Project, TodoItem } from ".";
 import { Storage } from "./storage";
 
@@ -8,6 +9,8 @@ const toggleSidebar = document.querySelector(".toggle-sidebar");
 const nav = document.querySelector(".nav");
 const navLine = nav.querySelectorAll("button");
 const inboxBtn = document.querySelector("[data-index='inbox']");
+const todayBtn = document.querySelector("[data-index='today']");
+const weekBtn = document.querySelector("[data-index='week']");
 //const completeBtn = document.querySelector("#complete");
 const addButtonTemplateHTML = document.querySelector("#add-button-template");
 const projectTemplateHTML = document.querySelector("#project-template");
@@ -104,11 +107,12 @@ const inputTodo = (projectIndex, todoIndex) => {
     inputDuedate.value = currentTodo.dueDate;
     todoInputForm.addEventListener("submit", (e) => {
       e.preventDefault();
+      const dueDate = format(new Date(inputDuedate.value), "dd/MM/yyyy");
       Storage.editTodo(
         projectIndex,
         todoIndex,
         inputDescription.value,
-        inputDuedate.value
+        dueDate
       );
       renderProjectTodos(projectIndex);
     });
@@ -131,7 +135,8 @@ const inputTodo = (projectIndex, todoIndex) => {
       projectIndex = todoApp.projects.findIndex(
         (project) => project.description === `${select.value}`
       );
-      const todoItem = new TodoItem(inputDescription.value, inputDuedate.value);
+      const dueDate = format(new Date(inputDuedate.value), "dd/MM/yyyy");
+      const todoItem = new TodoItem(inputDescription.value, dueDate);
       Storage.addTodo(projectIndex, todoItem);
       renderProjectTodos(projectIndex);
     });
@@ -141,7 +146,8 @@ const inputTodo = (projectIndex, todoIndex) => {
   else {
     todoInputForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      const todoItem = new TodoItem(inputDescription.value, inputDuedate.value);
+      const dueDate = format(new Date(inputDuedate.value), "dd/MM/yyyy");
+      const todoItem = new TodoItem(inputDescription.value, dueDate);
       Storage.addTodo(projectIndex, todoItem);
       renderProjectTodos(projectIndex);
     });
@@ -304,11 +310,13 @@ const renderWelcome = () => {
 
 export const renderInbox = () => {
   renderHeader("Inbox");
-  todoApp.projects.forEach((project, projectIndex) => {
-    project.todoList.forEach((item, todoindex) => {
-      renderTodo(item, todoindex, projectIndex);
+  Storage.getTodoApp()
+    .getProjects()
+    .forEach((project, projectIndex) => {
+      project.todoList.forEach((item, todoindex) => {
+        renderTodo(item, todoindex, projectIndex);
+      });
     });
-  });
   if (Storage.getTodoApp().getProjects().length != 0) {
     renderAddTodoButton(null);
   } else {
@@ -322,16 +330,58 @@ inboxBtn.addEventListener("click", () => {
 });
 
 toggleSidebar.addEventListener("click", () => {
-  aside.classList.toggle('aside-hide');
+  aside.classList.toggle("aside-hide");
 });
 
-window.addEventListener('resize', () => {
-  if(window.innerWidth <= 960) {
-    aside.classList.remove('aside-hide');
+window.addEventListener("resize", () => {
+  if (window.innerWidth >= 960) {
+    aside.classList.remove("aside-hide");
   }
-})
+});
 
-/* const renderCompleted = () => {
+todayBtn.addEventListener("click", () => {
+  renderToday();
+});
+
+const renderToday = () => {
+  clearTodos();
+  renderHeader("Today");
+  Storage.getTodoApp()
+    .getProjects()
+    .forEach((project, projectIndex) => {
+      project.getTodayTodos().forEach((item, todoindex) => {
+        renderTodo(item, todoindex, projectIndex);
+      });
+    });
+};
+
+weekBtn.addEventListener("click", () => {
+  renderThisWeek();
+});
+
+const renderThisWeek = () => {
+  clearTodos();
+  renderHeader("Next 7 days");
+  Storage.getTodoApp()
+    .getProjects()
+    .forEach((project, projectIndex) => {
+      project.getThisWeekTodos().forEach((item, todoindex) => {
+        renderTodo(item, todoindex, projectIndex);
+      });
+    });
+
+  /* const sorted = weekTodos.sort((todo1, todo2) =>
+    compareAsc(
+      toDate(new Date(todo1.getDateFormatted())),
+      toDate(new Date(todo2.getDateFormatted()))
+    )
+  );
+  console.log(sorted) */
+};
+
+/* 
+
+const renderCompleted = () => {
   todoApp.projects.forEach((project, projectIndex) => {
     const completedTodos = project.todoList.filter(
       (todo) => todo.isComplete === true
@@ -350,9 +400,11 @@ window.addEventListener('resize', () => {
     deleteAll.addEventListener("click", () => deleteCompleted());
     todos.appendChild(deleteAll);
   }
-}; */
+}; 
 
-/* completeBtn.addEventListener("click", () => {
+completeBtn.addEventListener("click", () => {
   clearTodos();
   renderCompleted();
-}); */
+}); 
+
+*/

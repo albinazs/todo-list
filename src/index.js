@@ -1,5 +1,5 @@
 import "./style.css";
-import { format } from "date-fns";
+import { toDate, isToday, isThisWeek } from "date-fns";
 import { renderInbox, renderProjects } from "./DOM";
 import { Storage } from "./storage";
 
@@ -17,6 +17,13 @@ export class TodoItem {
 
   completeTodo() {
     this.isComplete = false;
+  }
+
+  getDateFormatted() {
+    const day = this.dueDate.split("/")[0];
+    const month = this.dueDate.split("/")[1];
+    const year = this.dueDate.split("/")[2];
+    return `${month}/${day}/${year}`;
   }
 }
 
@@ -48,6 +55,18 @@ export class Project {
 
   removeTodo(index) {
     this.todoList.splice(index, 1);
+  }
+
+  getTodayTodos() {
+    return this.todoList.filter((todo) =>
+      isToday(toDate(new Date(todo.getDateFormatted())))
+    );
+  }
+
+  getThisWeekTodos() {
+    return this.todoList.filter((todo) =>
+      isThisWeek(toDate(new Date(todo.getDateFormatted())))
+    );
   }
 }
 
@@ -108,8 +127,14 @@ renderProjects();
 /* 
 TODO
 
--- work with dates and today/week buttons - filter array tictactoe
-+sort for listing (urgents on the top)
+-- to add ascending sort for week
+-- to finalise complete todos logics
+-- if im inbox - highloght it. if i remove from inbox - stay there
+-- reorganise code in logical order (DOM) + 
+maybe leave index for init, 
+and store data structures in separate file
+-- readme file
+https://github.com/khunhour/todo_list/tree/main/dist
 
 -- complete logics?
 
