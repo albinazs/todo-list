@@ -1,6 +1,6 @@
-import { toDate, compareAsc, format } from "date-fns";
-import { todoApp, Project, TodoItem } from ".";
+import { todoApp, Project, TodoItem } from "./todoApp";
 import { Storage } from "./storage";
+import { toDate, format } from "date-fns";
 
 const todos = document.querySelector(".todos");
 const projects = document.querySelector(".projectlist");
@@ -110,7 +110,6 @@ const inputTodo = (projectIndex, todoIndex) => {
     );
     todoInputForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      console.log(new Date(inputDuedate.value));
       const dueDate = format(new Date(inputDuedate.value), "dd/MM/yyyy");
       Storage.editTodo(
         projectIndex,
@@ -404,12 +403,18 @@ const renderThisWeek = () => {
       toDate(new Date(todo2.getDateFormatted()))
     )
   );
-  console.log(sorted) */
+ */
   if (Storage.getTodoApp().getProjects().length != 0) {
     renderAddTodoButton(null);
   } else {
     renderWelcome();
   }
+};
+
+export const renderHomePage = () => {
+  document.querySelector("#inbox").classList.add("active");
+  renderInbox();
+  renderProjects();
 };
 
 /* 

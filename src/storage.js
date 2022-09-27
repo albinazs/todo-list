@@ -1,4 +1,4 @@
-import { todoApp, Project, TodoItem } from ".";
+import { todoApp, Project, TodoItem } from "./todoApp";
 
 export class Storage {
   static saveTodoApp() {
