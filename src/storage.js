@@ -17,13 +17,11 @@ export class Storage {
       )
     );
 
-    TodoApp
-      .getProjects()
-      .forEach((project) =>
-        project.setTodos(
-          project.getTodos().map((todo) => Object.assign(new TodoItem(), todo))
-        )
-      );
+    TodoApp.getProjects().forEach((project) =>
+      project.setTodos(
+        project.getTodos().map((todo) => Object.assign(new TodoItem(), todo))
+      )
+    );
 
     return TodoApp;
   }
@@ -49,8 +47,10 @@ export class Storage {
   }
 
   static editTodo(projectIndex, todoIndex, newDescription, newDueDate) {
-    todoApp.projects[projectIndex].todoList[todoIndex].editTodo(newDescription, newDueDate)
+    todoApp.projects[projectIndex].todoList[todoIndex].editTodo(
+      newDescription,
+      newDueDate
+    );
     Storage.saveTodoApp();
   }
-
 }

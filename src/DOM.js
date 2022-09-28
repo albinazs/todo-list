@@ -1,4 +1,4 @@
-import { todoApp, Project, TodoItem } from "./todoApp";
+import { Project, TodoItem } from "./todoApp";
 import { Storage } from "./storage";
 import { toDate, format } from "date-fns";
 
@@ -18,153 +18,6 @@ const todoTemplateHTML = document.querySelector("#todo-template");
 const addProjectTemplateHTML = document.querySelector("#add-project-template");
 const addTodoTemplateHTML = document.querySelector("#add-todo-template");
 let selectedIndex;
-
-const renderTodo = (item, todoIndex, projectIndex) => {
-  const todoTemplate = document.importNode(todoTemplateHTML.content, true);
-  const itemLine = todoTemplate.querySelector("li");
-  const check = todoTemplate.querySelector("input");
-  const descP = todoTemplate.querySelector("p:first-of-type");
-  const dateP = todoTemplate.querySelector("p:last-of-type");
-  const editBtn = todoTemplate.querySelector("button:first-of-type");
-  const deleteBtn = todoTemplate.querySelector("button:last-of-type");
-  descP.textContent = `${item.description}`;
-  dateP.textContent = `${item.dueDate}`;
-  editBtn.dataset.todoIndex = `${todoIndex}`;
-  deleteBtn.dataset.todoIndex = `${todoIndex}`;
-
-  if (item.isComplete === true) {
-    check.checked = true;
-    descP.classList.add("check");
-    dateP.classList.add("check");
-  }
-  check.addEventListener("change", () => {
-    if (check.checked) {
-      descP.classList.add("check");
-      dateP.classList.add("check");
-      item.isComplete = true;
-    } else {
-      descP.classList.remove("check");
-      dateP.classList.remove("check");
-      item.isComplete = false;
-    }
-  });
-
-  editBtn.dataset.projectIndex = projectIndex;
-  editBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    inputTodo(projectIndex, todoIndex);
-  });
-
-  deleteBtn.dataset.projectIndex = projectIndex;
-  deleteBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    removeTodo(projectIndex, todoIndex);
-  });
-
-  todos.appendChild(itemLine);
-};
-
-const removeTodo = (projectIndex, todoIndex) => {
-  Storage.removeTodo(projectIndex, todoIndex);
-  clearTodos();
-  renderProjectTodos(projectIndex);
-};
-
-const renderAddTodoButton = (projectIndex) => {
-  const addButtonTemplate = document.importNode(
-    addButtonTemplateHTML.content,
-    true
-  );
-  const addButton = addButtonTemplate.querySelector("li");
-  const buttonName = addButtonTemplate.querySelector("p");
-  buttonName.textContent = "Add task";
-  addButton.addEventListener("click", () => inputTodo(projectIndex));
-  todos.appendChild(addButton);
-};
-
-// Make global values and create 3 separate functions
-const inputTodo = (projectIndex, todoIndex) => {
-  todos.removeChild(todos.lastChild);
-  const addTodoTemplate = document.importNode(
-    addTodoTemplateHTML.content,
-    true
-  );
-  const todoInputForm = addTodoTemplate.querySelector("form");
-  const inputDescription = addTodoTemplate.querySelector("input[type=text]");
-  const inputDuedate = addTodoTemplate.querySelector("input[type=date]");
-  const select = addTodoTemplate.querySelector("select");
-  const submitBtn = addTodoTemplate.querySelector("button[type=submit]");
-  const cancelBtn = addTodoTemplate.querySelector("button[type=reset]");
-
-  cancelBtn.addEventListener("click", () => {
-    todos.removeChild(todos.lastChild);
-    renderAddTodoButton(projectIndex);
-  });
-  // EDIT TODO
-  if (todoIndex || todoIndex === 0) {
-    const currentTodo = todoApp.projects[projectIndex].todoList[todoIndex];
-    inputDescription.value = currentTodo.description;
-    inputDuedate.value = format(
-      toDate(new Date(currentTodo.getDateFormatted())),
-      "yyyy-MM-dd"
-    );
-    todoInputForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const dueDate = format(new Date(inputDuedate.value), "dd/MM/yyyy");
-      Storage.editTodo(
-        projectIndex,
-        todoIndex,
-        inputDescription.value,
-        dueDate
-      );
-      editDeleteHighlight(projectIndex);
-      renderProjectTodos(projectIndex);
-    });
-    select.style.display = "none";
-    submitBtn.textContent = "Edit";
-    todos.appendChild(todoInputForm);
-    return;
-  }
-  // ADD TODO OUTSIDE ANY PROJECT
-  if (projectIndex === null) {
-    todoApp.projects.forEach((project) => {
-      const projectOption = document.createElement("option");
-      projectOption.textContent = `${project.description}`;
-      projectOption.value = `${project.description}`;
-      select.appendChild(projectOption);
-    });
-
-    todoInputForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      projectIndex = todoApp.projects.findIndex(
-        (project) => project.description === `${select.value}`
-      );
-      const dueDate = format(new Date(inputDuedate.value), "dd/MM/yyyy");
-      const todoItem = new TodoItem(inputDescription.value, dueDate);
-      Storage.addTodo(projectIndex, todoItem);
-      editDeleteHighlight(projectIndex);
-      renderProjectTodos(projectIndex);
-    });
-    todos.appendChild(todoInputForm);
-  }
-  // ADD TODO WITHIN SPECIFIC PROJECT
-  else {
-    todoInputForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const dueDate = format(new Date(inputDuedate.value), "dd/MM/yyyy");
-      const todoItem = new TodoItem(inputDescription.value, dueDate);
-      Storage.addTodo(projectIndex, todoItem);
-      editDeleteHighlight(projectIndex);
-      renderProjectTodos(projectIndex);
-    });
-    select.style.display = "none";
-    todos.appendChild(todoInputForm);
-  }
-};
-
-const clearTodos = () => {
-  todos.innerHTML = "";
-};
 
 const addProject = () => {
   projects.removeChild(projects.lastChild);
@@ -200,51 +53,21 @@ const addProject = () => {
   });
 };
 
-nav.addEventListener("click", (e) => {
-  navSelectedHighlight(e);
-});
-
-const navSelectedHighlight = (e) => {
-  navLine.forEach((line) => line.classList.remove("active"));
-  if (e.target.dataset.index === "inbox") {
-    document.querySelector("#inbox").classList.add("active");
-  } else if (e.target.dataset.index === "today") {
-    document.querySelector("#today").classList.add("active");
-  } else if (e.target.dataset.index === "week") {
-    document.querySelector("#week").classList.add("active");
-  } else if (e.target.dataset.index === "complete") {
-    document.querySelector("#complete").classList.add("active");
-  }
-  selectedIndex = null;
+const removeProject = (e) => {
+  e.stopPropagation();
+  const toDelete = e.target.dataset.projectIndex;
+  Storage.removeProject(toDelete);
   clearProjects();
   renderProjects();
+  clearTodos();
+  renderInbox();
 };
 
-projects.addEventListener("click", (e) => {
-  projectsSelectedHighlight(e);
-});
-
-const projectsSelectedHighlight = (e) => {
-  navLine.forEach((line) => line.classList.remove("active"));
-  if (e.target.dataset.index) {
-    selectedIndex = e.target.dataset.index;
-    clearProjects();
-    renderProjects();
-  } else if (e.target.closest("[data-index]")) {
-    selectedIndex = e.target.parentElement.getAttribute("data-index");
-    clearProjects();
-    renderProjects();
-  }
+const clearProjects = () => {
+  projects.innerHTML = "";
 };
 
-const editDeleteHighlight = (projectIndex) => {
-  navLine.forEach((line) => line.classList.remove("active"));
-  selectedIndex = projectIndex;
-  clearProjects();
-  renderProjects();
-};
-
-export const renderProjects = () => {
+const renderProjects = () => {
   Storage.getTodoApp()
     .getProjects()
     .forEach((project, projectIndex) => {
@@ -303,20 +126,6 @@ const renderProjectTodos = (projectIndex) => {
   renderAddTodoButton(projectIndex);
 };
 
-const removeProject = (e) => {
-  e.stopPropagation();
-  const toDelete = e.target.dataset.projectIndex;
-  Storage.removeProject(toDelete);
-  clearProjects();
-  renderProjects();
-  clearTodos();
-  renderInbox();
-};
-
-const clearProjects = () => {
-  projects.innerHTML = "";
-};
-
 const renderHeader = (header) => {
   const headerName = document.createElement("h4");
   headerName.textContent = header;
@@ -329,7 +138,156 @@ const renderWelcome = () => {
   todos.appendChild(headerName);
 };
 
-export const renderInbox = () => {
+const renderAddTodoButton = (projectIndex) => {
+  const addButtonTemplate = document.importNode(
+    addButtonTemplateHTML.content,
+    true
+  );
+  const addButton = addButtonTemplate.querySelector("li");
+  const buttonName = addButtonTemplate.querySelector("p");
+  buttonName.textContent = "Add task";
+  addButton.addEventListener("click", () => inputTodo(projectIndex));
+  todos.appendChild(addButton);
+};
+
+const inputTodo = (projectIndex, todoIndex) => {
+  todos.removeChild(todos.lastChild);
+  const addTodoTemplate = document.importNode(
+    addTodoTemplateHTML.content,
+    true
+  );
+  const todoInputForm = addTodoTemplate.querySelector("form");
+  const inputDescription = addTodoTemplate.querySelector("input[type=text]");
+  const inputDuedate = addTodoTemplate.querySelector("input[type=date]");
+  const select = addTodoTemplate.querySelector("select");
+  const submitBtn = addTodoTemplate.querySelector("button[type=submit]");
+  const cancelBtn = addTodoTemplate.querySelector("button[type=reset]");
+
+  cancelBtn.addEventListener("click", () => {
+    todos.removeChild(todos.lastChild);
+    renderAddTodoButton(projectIndex);
+  });
+  // EDIT TODO
+  if (todoIndex || todoIndex === 0) {
+    const currentTodo = Storage.getTodoApp()
+      .getProjects()
+      [projectIndex].getTodos()[todoIndex];
+    inputDescription.value = currentTodo.description;
+    inputDuedate.value = format(
+      toDate(new Date(currentTodo.getDateFormatted())),
+      "yyyy-MM-dd"
+    );
+    todoInputForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const dueDate = format(new Date(inputDuedate.value), "dd/MM/yyyy");
+      Storage.editTodo(
+        projectIndex,
+        todoIndex,
+        inputDescription.value,
+        dueDate
+      );
+      editDeleteHighlight(projectIndex);
+      renderProjectTodos(projectIndex);
+    });
+    select.style.display = "none";
+    submitBtn.textContent = "Edit";
+    todos.appendChild(todoInputForm);
+    return;
+  }
+  // ADD TODO OUTSIDE ANY PROJECT
+  if (projectIndex === null) {
+    Storage.getTodoApp()
+      .getProjects()
+      .forEach((project) => {
+        const projectOption = document.createElement("option");
+        projectOption.textContent = `${project.description}`;
+        projectOption.value = `${project.description}`;
+        select.appendChild(projectOption);
+      });
+
+    todoInputForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      projectIndex = Storage.getTodoApp().getIndex(select.value);
+      const dueDate = format(new Date(inputDuedate.value), "dd/MM/yyyy");
+      const todoItem = new TodoItem(inputDescription.value, dueDate);
+      Storage.addTodo(projectIndex, todoItem);
+      editDeleteHighlight(projectIndex);
+      renderProjectTodos(projectIndex);
+    });
+    todos.appendChild(todoInputForm);
+  }
+  // ADD TODO WITHIN SPECIFIC PROJECT
+  else {
+    todoInputForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const dueDate = format(new Date(inputDuedate.value), "dd/MM/yyyy");
+      const todoItem = new TodoItem(inputDescription.value, dueDate);
+      Storage.addTodo(projectIndex, todoItem);
+      editDeleteHighlight(projectIndex);
+      renderProjectTodos(projectIndex);
+    });
+    select.style.display = "none";
+    todos.appendChild(todoInputForm);
+  }
+};
+
+const removeTodo = (projectIndex, todoIndex) => {
+  Storage.removeTodo(projectIndex, todoIndex);
+  clearTodos();
+  renderProjectTodos(projectIndex);
+};
+
+const clearTodos = () => {
+  todos.innerHTML = "";
+};
+
+const renderTodo = (item, todoIndex, projectIndex) => {
+  const todoTemplate = document.importNode(todoTemplateHTML.content, true);
+  const itemLine = todoTemplate.querySelector("li");
+  const check = todoTemplate.querySelector("input");
+  const descP = todoTemplate.querySelector("p:first-of-type");
+  const dateP = todoTemplate.querySelector("p:last-of-type");
+  const editBtn = todoTemplate.querySelector("button:first-of-type");
+  const deleteBtn = todoTemplate.querySelector("button:last-of-type");
+  descP.textContent = `${item.description}`;
+  dateP.textContent = `${item.dueDate}`;
+  editBtn.dataset.todoIndex = `${todoIndex}`;
+  deleteBtn.dataset.todoIndex = `${todoIndex}`;
+
+  if (item.isComplete === true) {
+    check.checked = true;
+    descP.classList.add("check");
+    dateP.classList.add("check");
+  }
+  check.addEventListener("change", () => {
+    if (check.checked) {
+      descP.classList.add("check");
+      dateP.classList.add("check");
+      item.isComplete = true;
+    } else {
+      descP.classList.remove("check");
+      dateP.classList.remove("check");
+      item.isComplete = false;
+    }
+  });
+
+  editBtn.dataset.projectIndex = projectIndex;
+  editBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    inputTodo(projectIndex, todoIndex);
+  });
+
+  deleteBtn.dataset.projectIndex = projectIndex;
+  deleteBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    removeTodo(projectIndex, todoIndex);
+  });
+
+  todos.appendChild(itemLine);
+};
+
+const renderInbox = () => {
+  clearTodos();
   renderHeader("Inbox");
   Storage.getTodoApp()
     .getProjects()
@@ -344,27 +302,6 @@ export const renderInbox = () => {
     renderWelcome();
   }
 };
-
-inboxBtn.addEventListener("click", () => {
-  clearTodos();
-  renderInbox();
-});
-
-toggleSidebar.addEventListener("click", () => {
-  aside.classList.toggle("aside-show");
-});
-
-window.addEventListener("resize", () => {
-  if (window.innerWidth >= 960) {
-    aside.classList.remove("aside-show");
-  }
-});
-
-window.onload = () => document.querySelector("#inbox").classList.add("active");
-
-todayBtn.addEventListener("click", () => {
-  renderToday();
-});
 
 const renderToday = () => {
   clearTodos();
@@ -382,10 +319,6 @@ const renderToday = () => {
     renderWelcome();
   }
 };
-
-weekBtn.addEventListener("click", () => {
-  renderThisWeek();
-});
 
 const renderThisWeek = () => {
   clearTodos();
@@ -411,8 +344,74 @@ const renderThisWeek = () => {
   }
 };
 
+const navSelectedHighlight = (e) => {
+  navLine.forEach((line) => line.classList.remove("active"));
+  if (e.target.dataset.index === "inbox") {
+    document.querySelector("#inbox").classList.add("active");
+  } else if (e.target.dataset.index === "today") {
+    document.querySelector("#today").classList.add("active");
+  } else if (e.target.dataset.index === "week") {
+    document.querySelector("#week").classList.add("active");
+  } else if (e.target.dataset.index === "complete") {
+    document.querySelector("#complete").classList.add("active");
+  }
+  selectedIndex = null;
+  clearProjects();
+  renderProjects();
+};
+
+const projectsSelectedHighlight = (e) => {
+  navLine.forEach((line) => line.classList.remove("active"));
+  if (e.target.dataset.index) {
+    selectedIndex = e.target.dataset.index;
+    clearProjects();
+    renderProjects();
+  } else if (e.target.closest("[data-index]")) {
+    selectedIndex = e.target.parentElement.getAttribute("data-index");
+    clearProjects();
+    renderProjects();
+  }
+};
+
+const editDeleteHighlight = (projectIndex) => {
+  navLine.forEach((line) => line.classList.remove("active"));
+  selectedIndex = projectIndex;
+  clearProjects();
+  renderProjects();
+};
+
+inboxBtn.addEventListener("click", () => {
+  renderInbox();
+});
+
+todayBtn.addEventListener("click", () => {
+  renderToday();
+});
+
+weekBtn.addEventListener("click", () => {
+  renderThisWeek();
+});
+
+nav.addEventListener("click", (e) => {
+  navSelectedHighlight(e);
+});
+
+projects.addEventListener("click", (e) => {
+  projectsSelectedHighlight(e);
+});
+
+toggleSidebar.addEventListener("click", () => {
+  aside.classList.toggle("aside-show");
+});
+
+window.addEventListener("resize", () => {
+  if (window.innerWidth >= 960) {
+    aside.classList.remove("aside-show");
+  }
+});
+
 export const renderHomePage = () => {
-  document.querySelector("#inbox").classList.add("active");
+  inboxBtn.classList.add("active");
   renderInbox();
   renderProjects();
 };
