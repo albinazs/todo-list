@@ -1,7 +1,7 @@
 Todo App
 
 Todo app created using HTML, CSS, Javascript, date-fns package, ESLint, Prettier and webpack.
-Check out live preview here:
+Check out live preview here: https://albinazs.github.io/todo-list/
 
 Functionality:
 
